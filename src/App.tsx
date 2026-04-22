@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { strings, type Lang, type Theme, parseRich } from './i18n'
+import { formatUpdateDate, type LabUpdate, updatesSorted } from './updates'
 import './App.css'
 
 const SERVICES = [
@@ -10,6 +11,15 @@ const SERVICES = [
   'n8n',
   'Vaultwarden',
   'Beszel',
+] as const
+const SECTION_IDS = [
+  'overview',
+  'hardware',
+  'stack',
+  'updates',
+  'network',
+  'ops',
+  'story',
 ] as const
 
 function RichParagraph({ text }: { text: string }) {
@@ -26,6 +36,66 @@ function RichParagraph({ text }: { text: string }) {
         ),
       )}
     </p>
+  )
+}
+
+function RichInline({ text }: { text: string }) {
+  const parts = parseRich(text)
+  return (
+    <>
+      {parts.map((p, i) =>
+        typeof p === 'string' ? (
+          <span key={i}>{p}</span>
+        ) : (
+          <strong key={i} className="on-surface">
+            {p.bold}
+          </strong>
+        ),
+      )}
+    </>
+  )
+}
+
+function UpdateEntry({ update, lang }: { update: LabUpdate; lang: Lang }) {
+  const title = lang === 'es' ? update.title.es : update.title.en
+  const body = lang === 'es' ? update.body.es : update.body.en
+  const bullets = update.bullets
+    ? lang === 'es'
+      ? update.bullets.es
+      : update.bullets.en
+    : null
+  return (
+    <article className="update-entry" id={`log-${update.id}`} aria-labelledby={`log-title-${update.id}`}>
+      <header className="update-entry__head">
+        <time className="update-entry__date" dateTime={update.date}>
+          {formatUpdateDate(update.date, lang)}
+        </time>
+        {update.tags && update.tags.length > 0 ? (
+          <ul className="update-entry__tags" aria-label={strings[lang].updatesTagsLabel}>
+            {update.tags.map((tag) => (
+              <li key={tag}>
+                <span className="update-entry__tag">{tag}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </header>
+      <h3 className="update-entry__title" id={`log-title-${update.id}`}>
+        {title}
+      </h3>
+      <div className="update-entry__body">
+        <RichParagraph text={body} />
+      </div>
+      {bullets && bullets.length > 0 ? (
+        <ul className="update-entry__bullets">
+          {bullets.map((line, i) => (
+            <li key={i}>
+              <RichInline text={line} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </article>
   )
 }
 
@@ -157,7 +227,7 @@ function App() {
     if (reduceMotion.matches) return
 
     let raf = 0
-    const baseRotate = -7
+    const baseRotate = -2
 
     const update = () => {
       raf = 0
@@ -168,7 +238,7 @@ function App() {
       const tScroll = range > 0 ? visible / range : 0
       const eased = tScroll * tScroll * (3 - 2 * tScroll)
       const y = (eased - 0.5) * 36
-      const rot = (eased - 0.5) * 5
+      const rot = (eased - 0.5) * 3
       el.style.transform = `translate3d(0, ${y}px, 0) rotate(${baseRotate + rot}deg)`
     }
 
@@ -198,30 +268,77 @@ function App() {
   }, [menuOpen])
 
   useEffect(() => {
-    const ids = ['overview', 'hardware', 'stack', 'network', 'ops', 'story']
-    const sections = ids
+    const sections = SECTION_IDS
       .map((id) => document.getElementById(id))
       .filter((s): s is HTMLElement => s instanceof HTMLElement)
     if (!sections.length) return
 
+    let raf = 0
+    let ioVisible = new Set<string>()
+
+    const pickByScroll = () => {
+      const topOffset = 132
+      let current = sections[0].id
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= topOffset) {
+          current = section.id
+        } else {
+          break
+        }
+      }
+      setActiveSection(current)
+    }
+
+    const schedulePick = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        if (ioVisible.size === 0) {
+          pickByScroll()
+        }
+      })
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-        if (visible[0]?.target?.id) {
-          setActiveSection(visible[0].target.id)
+        for (const entry of entries) {
+          const id = (entry.target as HTMLElement).id
+          if (entry.isIntersecting) ioVisible.add(id)
+          else ioVisible.delete(id)
         }
+
+        const visible = sections
+          .filter((section) => ioVisible.has(section.id))
+          .sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)
+        if (visible[0]) {
+          setActiveSection(visible[0].id)
+          return
+        }
+        pickByScroll()
       },
       {
-        threshold: [0.2, 0.35, 0.55, 0.7],
-        rootMargin: '-28% 0px -54% 0px',
+        threshold: [0, 0.15, 0.35, 0.6, 0.85],
+        rootMargin: '-18% 0px -62% 0px',
       },
     )
 
     sections.forEach((section) => observer.observe(section))
-    return () => observer.disconnect()
+    window.addEventListener('scroll', schedulePick, { passive: true })
+    window.addEventListener('resize', schedulePick, { passive: true })
+    pickByScroll()
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', schedulePick)
+      window.removeEventListener('resize', schedulePick)
+      if (raf) cancelAnimationFrame(raf)
+    }
   }, [])
+
+  const handleNavClick = (targetSection: (typeof SECTION_IDS)[number]) => {
+    setActiveSection(targetSection)
+    setMenuOpen(false)
+  }
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
@@ -257,7 +374,7 @@ function App() {
                   <a
                     href="#overview"
                     aria-current={activeSection === 'overview' ? 'page' : undefined}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => handleNavClick('overview')}
                   >
                     {t.navOverview}
                   </a>
@@ -266,7 +383,7 @@ function App() {
                   <a
                     href="#hardware"
                     aria-current={activeSection === 'hardware' ? 'page' : undefined}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => handleNavClick('hardware')}
                   >
                     {t.navHardware}
                   </a>
@@ -275,16 +392,25 @@ function App() {
                   <a
                     href="#stack"
                     aria-current={activeSection === 'stack' ? 'page' : undefined}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => handleNavClick('stack')}
                   >
                     {t.navStack}
                   </a>
                 </li>
                 <li>
                   <a
+                    href="#updates"
+                    aria-current={activeSection === 'updates' ? 'page' : undefined}
+                    onClick={() => handleNavClick('updates')}
+                  >
+                    {t.navUpdates}
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="#network"
                     aria-current={activeSection === 'network' ? 'page' : undefined}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => handleNavClick('network')}
                   >
                     {t.navNetwork}
                   </a>
@@ -293,7 +419,7 @@ function App() {
                   <a
                     href="#ops"
                     aria-current={activeSection === 'ops' ? 'page' : undefined}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => handleNavClick('ops')}
                   >
                     {t.navOps}
                   </a>
@@ -302,7 +428,7 @@ function App() {
                   <a
                     href="#story"
                     aria-current={activeSection === 'story' ? 'page' : undefined}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => handleNavClick('story')}
                   >
                     {t.navStory}
                   </a>
@@ -357,32 +483,37 @@ function App() {
         <div className="mobile-nav-body">
           <ul className="mobile-nav-list">
             <li>
-              <a href="#overview" aria-current={activeSection === 'overview' ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+              <a href="#overview" aria-current={activeSection === 'overview' ? 'page' : undefined} onClick={() => handleNavClick('overview')}>
                 {t.navOverview}
               </a>
             </li>
             <li>
-              <a href="#hardware" aria-current={activeSection === 'hardware' ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+              <a href="#hardware" aria-current={activeSection === 'hardware' ? 'page' : undefined} onClick={() => handleNavClick('hardware')}>
                 {t.navHardware}
               </a>
             </li>
             <li>
-              <a href="#stack" aria-current={activeSection === 'stack' ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+              <a href="#stack" aria-current={activeSection === 'stack' ? 'page' : undefined} onClick={() => handleNavClick('stack')}>
                 {t.navStack}
               </a>
             </li>
             <li>
-              <a href="#network" aria-current={activeSection === 'network' ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+              <a href="#updates" aria-current={activeSection === 'updates' ? 'page' : undefined} onClick={() => handleNavClick('updates')}>
+                {t.navUpdates}
+              </a>
+            </li>
+            <li>
+              <a href="#network" aria-current={activeSection === 'network' ? 'page' : undefined} onClick={() => handleNavClick('network')}>
                 {t.navNetwork}
               </a>
             </li>
             <li>
-              <a href="#ops" aria-current={activeSection === 'ops' ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+              <a href="#ops" aria-current={activeSection === 'ops' ? 'page' : undefined} onClick={() => handleNavClick('ops')}>
                 {t.navOps}
               </a>
             </li>
             <li>
-              <a href="#story" aria-current={activeSection === 'story' ? 'page' : undefined} onClick={() => setMenuOpen(false)}>
+              <a href="#story" aria-current={activeSection === 'story' ? 'page' : undefined} onClick={() => handleNavClick('story')}>
                 {t.navStory}
               </a>
             </li>
@@ -445,11 +576,15 @@ function App() {
               <div ref={parallaxRef} className="hero-parallax motion-allow">
                 <div className="hero-img-wrap motion-allow">
                   <picture>
-                    <source srcSet="/nuc11.webp" type="image/webp" />
+                    <source
+                      type="image/webp"
+                      srcSet="/nuc11atkc4_tilted_500x500.webp 500w, /nuc11atkc4_tilted_700x700.webp 700w"
+                      sizes="(max-width: 680px) min(92vw, 420px), (max-width: 1100px) min(54vw, 480px), 520px"
+                    />
                     <img
-                      src="/nuc11.png"
-                      width={520}
-                      height={520}
+                      src="/nuc11atkc4_hd_tilted.png"
+                      width={500}
+                      height={500}
                       className="hero-img"
                       alt={t.nucAlt}
                       decoding="async"
@@ -461,16 +596,22 @@ function App() {
             </div>
           </section>
 
-          <section id="hardware" className="bento section-shell section-shell--hardware" aria-labelledby="hw-title">
-            <article className="bento-card bento-card--wide section-shell__lead">
-              <p className="section-marker">01 / Hardware</p>
+          <section id="hardware" className="section hardware-section" aria-labelledby="hw-title">
+            <div className="section-head section-head--tight">
+              <p className="section-marker">
+              01 / {t.navHardware}
+            </p>
               <h2 id="hw-title">{t.hwTitle}</h2>
-              <RichParagraph text={t.hwBody} />
-            </article>
-            <article className="bento-card section-shell__side">
-              <h2>{t.baseOsTitle}</h2>
-              <RichParagraph text={t.baseOsBody} />
-            </article>
+            </div>
+            <div className="hardware-body">
+              <div className="hardware-panel hardware-panel--primary">
+                <RichParagraph text={t.hwBody} />
+              </div>
+              <div className="hardware-panel hardware-panel--secondary">
+                <h3 className="hardware-subtitle">{t.baseOsTitle}</h3>
+                <RichParagraph text={t.baseOsBody} />
+              </div>
+            </div>
           </section>
 
           <section
@@ -479,7 +620,9 @@ function App() {
             aria-labelledby="svc-title"
           >
             <div className="section-head">
-              <p className="section-marker">02 / Stack</p>
+              <p className="section-marker">
+                02 / {t.navStack}
+              </p>
               <h2 id="svc-title">{t.stackTitle}</h2>
               <p className="section-intro">{t.stackIntro}</p>
             </div>
@@ -492,9 +635,32 @@ function App() {
             </ul>
           </section>
 
+          <section
+            id="updates"
+            className="section updates-section"
+            aria-labelledby="updates-section-title"
+          >
+            <div className="section-head">
+              <p className="section-marker">
+                03 / {t.navUpdates}
+              </p>
+              <h2 id="updates-section-title">{t.updatesSectionTitle}</h2>
+              <p className="section-intro">{t.updatesSectionIntro}</p>
+            </div>
+            <ol className="updates-feed" aria-label={t.updatesFeedLabel}>
+              {updatesSorted().map((entry) => (
+                <li key={entry.id}>
+                  <UpdateEntry update={entry} lang={lang} />
+                </li>
+              ))}
+            </ol>
+          </section>
+
           <section id="network" aria-labelledby="net-section-title">
             <div className="section-head section-head--tight">
-              <p className="section-marker">03 / Network</p>
+              <p className="section-marker">
+                04 / {t.navNetwork}
+              </p>
               <h2 id="net-section-title">{t.networkSectionTitle}</h2>
               <p className="section-intro">{t.networkSectionIntro}</p>
             </div>
@@ -512,7 +678,9 @@ function App() {
 
           <section id="ops" aria-labelledby="ops-section-title">
             <div className="section-head section-head--tight">
-              <p className="section-marker">04 / Ops</p>
+              <p className="section-marker">
+                05 / {t.navOps}
+              </p>
               <h2 id="ops-section-title">{t.opsSectionTitle}</h2>
             </div>
             <div className="bento bento--ops">
@@ -533,7 +701,9 @@ function App() {
 
           <section id="story" aria-labelledby="story-section-title">
             <div className="section-head section-head--tight">
-              <p className="section-marker">05 / Story</p>
+              <p className="section-marker">
+                06 / {t.navStory}
+              </p>
               <h2 id="story-section-title">{t.storySectionTitle}</h2>
             </div>
             <div className="bento bento--story">

@@ -9,6 +9,7 @@ export const strings = {
     navOverview: 'Overview',
     navHardware: 'Hardware',
     navStack: 'Stack',
+    navUpdates: 'Log',
     navNetwork: 'Network',
     navOps: 'Operations',
     navStory: 'Story',
@@ -37,6 +38,11 @@ export const strings = {
     stackTitle: "What's running",
     stackIntro:
       'All of these are Compose stacks in Dockge — same workflow for deploys, logs, and updates.',
+    updatesSectionTitle: 'Lab log',
+    updatesSectionIntro:
+      'Chronological notes—same format each time. Newest first; add a row in `src/updates.ts` when something worth writing happens.',
+    updatesFeedLabel: 'Lab log entries',
+    updatesTagsLabel: 'Tags',
     networkSectionTitle: 'Access & network',
     networkSectionIntro: 'How I connect, and where the LAN is heading.',
     networkAccessTitle: 'Remote access & proxy',
@@ -65,7 +71,7 @@ export const strings = {
     closingHidden: 'Closing',
     closing:
       'Homelab snapshot: infra I run, how I reach it, and what I am learning — not a tutorial, just where things stand.',
-    footer: '© 2026 GuillermoSH · Built with React, Tailwind and coffee.',
+    footer: '© 2026 GuillermoSH · Built with React, Vite and coffee.',
     nucAlt: 'Intel NUC 11 Pro mini PC, compact square chassis',
   },
   es: {
@@ -74,6 +80,7 @@ export const strings = {
     navOverview: 'Vista general',
     navHardware: 'Hardware',
     navStack: 'Stack',
+    navUpdates: 'Bitácora',
     navNetwork: 'Red',
     navOps: 'Operación',
     navStory: 'Historia',
@@ -102,6 +109,11 @@ export const strings = {
     stackTitle: 'Servicios en marcha',
     stackIntro:
       'Todo esto va como stacks de Compose en Dockge: mismo flujo para desplegar, ver logs y actualizar.',
+    updatesSectionTitle: 'Bitácora',
+    updatesSectionIntro:
+      'Notas con fecha: mismo formato en cada entrada. Más arriba = más reciente. Añade filas en `src/updates.ts` cuando pase algo que merezca quedar escrito.',
+    updatesFeedLabel: 'Entradas de la bitácora',
+    updatesTagsLabel: 'Etiquetas',
     networkSectionTitle: 'Acceso y red',
     networkSectionIntro: 'Cómo me conecto y hacia dónde va la LAN.',
     networkAccessTitle: 'Acceso remoto y proxy',
@@ -130,7 +142,7 @@ export const strings = {
     closingHidden: 'Cierre',
     closing:
       'Instantánea del homelab: qué ejecuto, cómo entro y qué estoy aprendiendo — no es un manual, solo el estado actual.',
-    footer: '© 2026 GuillermoSH · Hecho con React, Tailwind y cafe.',
+    footer: '© 2026 GuillermoSH · Hecho con React, Vite y cafe.',
     nucAlt: 'Mini PC Intel NUC 11 Pro, caja compacta',
   },
 } as const
