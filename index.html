@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script>
+      (function () {
+        try {
+          var th = localStorage.getItem('theme')
+          if (th === 'light' || th === 'dark') document.documentElement.dataset.theme = th
+          else document.documentElement.dataset.theme = 'dark'
+          var lg = localStorage.getItem('lang')
+          if (lg === 'en' || lg === 'es') document.documentElement.lang = lg
+          else document.documentElement.lang = 'es'
+        } catch (e) {}
+      })()
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Homelab: Intel NUC11, Ubuntu Server, Docker, Pi-hole, MikroTik y más. Instantánea del stack en casa."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>Sovereign Stack · Homelab</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
