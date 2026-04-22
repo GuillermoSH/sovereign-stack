@@ -65,7 +65,7 @@ export const strings = {
     closingHidden: 'Closing',
     closing:
       'Homelab snapshot: infra I run, how I reach it, and what I am learning — not a tutorial, just where things stand.',
-    footer: '© 2026 GuillermoSH · Built with React, Vite & coffee.',
+    footer: '© 2026 GuillermoSH · Built with React, Tailwind and coffee.',
     nucAlt: 'Intel NUC 11 Pro mini PC, compact square chassis',
   },
   es: {
@@ -130,7 +130,7 @@ export const strings = {
     closingHidden: 'Cierre',
     closing:
       'Instantánea del homelab: qué ejecuto, cómo entro y qué estoy aprendiendo — no es un manual, solo el estado actual.',
-    footer: '© 2026 GuillermoSH · Hecho con React, Vite y café.',
+    footer: '© 2026 GuillermoSH · Hecho con React, Tailwind y cafe.',
     nucAlt: 'Mini PC Intel NUC 11 Pro, caja compacta',
   },
 } as const
