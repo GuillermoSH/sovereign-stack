@@ -29,8 +29,8 @@ Objetivo: tener punto unico, simple y visual para revisar infraestructura person
 ### Ejecucion local
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ---
@@ -64,6 +64,6 @@ Goal: keep a single, simple, visual page to check my personal infrastructure.
 ### Run locally
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```

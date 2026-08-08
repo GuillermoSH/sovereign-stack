@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Personal scratch notes — raw brain-dump, not meant to be published as-is
+content-notes.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
