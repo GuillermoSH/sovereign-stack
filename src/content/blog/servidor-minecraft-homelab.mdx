@@ -1,0 +1,61 @@
+---
+title: "Servidor de Minecraft en el homelab: vanilla, difícil y con backups automáticos"
+date: "2026-08-15"
+excerpt: "Monté un servidor de Minecraft para casa. Vanilla, modo difícil, backups diarios y avisos por RCON antes de cada reinicio — todo en Docker."
+tags: ["minecraft", "docker", "homelab", "backups"]
+---
+
+No todo en el homelab tiene que ser infraestructura seria. A veces toca montar un servidor
+de Minecraft.
+
+## El servidor
+
+Corre en Docker con la imagen **itzg/minecraft-server** — la más completa y mantenida que
+hay para esto. Vanilla puro, versión actual, modo difícil, hasta 10 jugadores simultáneos.
+
+El acceso desde fuera de casa va por **WireGuard montado en el MikroTik** — sin abrir el
+puerto de Minecraft directamente a internet. Quien quiera jugar necesita estar en la VPN.
+Sin exposición al escaneo automático de bots que buscan servidores públicos.
+
+## Los backups
+
+Lo que más me importaba era no perder el mundo si algo fallaba. La imagen **itzg/mc-backup**
+lo resuelve limpiamente — corre como contenedor paralelo y se coordina con el servidor vía
+**RCON** para pausar el guardado en disco justo durante el backup, evitando que el mundo
+quede en un estado inconsistente.
+
+El esquema:
+
+- Backup diario automático a las **4:30 AM**
+- Retención de **7 días** — los backups más antiguos se borran solos
+- El contenedor de backup monta los datos del servidor en **solo lectura** — no puede
+  modificar nada, solo leer
+- Espera inicial tras arrancar antes del primer backup, para dar tiempo al servidor a estar
+  completamente levantado
+
+Los backups viven en un directorio local. Pendiente añadir replicación a almacenamiento
+externo como segunda capa, pero para empezar cubre los casos más probables — corrupción,
+error humano, actualización que sale mal.
+
+## Los reinicios
+
+Los reinicios están programados. Antes de ejecutarse, el servidor avisa a los jugadores
+directamente **en el chat del juego vía RCON** con una cuenta atrás — así nadie se queda
+con la partida a medias sin enterarse.
+
+## Lo que viene: PhantomDash
+
+Tengo en marcha un proyecto en GitHub llamado [**PhantomDash**](https://github.com/GuillermoSH/PhantomDash)
+— un dashboard self-hosted para el servidor, diseñado específicamente para infraestructura
+limitada. Backend en Go para consumo mínimo de RAM, dejando toda la potencia libre para
+el servidor de juego.
+
+Lo que planea incluir:
+
+- Mapa interactivo 2D en vivo con jugadores conectados y sus coordenadas
+- Métricas del servidor en tiempo real
+- Consola RCON con comandos restringidos por rol
+- Gestión de energía del contenedor (arrancar, parar, reiniciar)
+- Sistema de roles: jugador, moderador y administrador
+
+100% self-hosted, sin telemetría, sin dependencias de nube externa. En desarrollo activo.

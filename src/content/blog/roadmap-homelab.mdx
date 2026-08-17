@@ -1,0 +1,134 @@
+---
+title: "Roadmap del homelab: lo que viene y en qué orden"
+date: "2026-08-17"
+excerpt: "Tengo varios cambios pendientes en el homelab. Los he agrupado en bloques con orden lógico para no romper nada por el camino."
+tags: ["stack", "homelab", "roadmap", "traefik", "vlans", "dockhand"]
+---
+
+El homelab no para quieto. Hay servicios que funcionan bien, otros que funcionan pero tienen
+sustituto mejor, y cosas que simplemente no están hechas todavía. En lugar de ir cambiando
+cosas al azar, lo he organizado en bloques con dependencias claras entre ellos.
+
+Este es el estado actual y lo que viene.
+
+## Estado actual
+
+El núcleo del homelab corre en un **Intel NUC11ATKC4** gestionado con **Dockge**, con
+**Nginx Proxy Manager** como reverse proxy y **Tailscale** para acceso remoto sin abrir
+puertos. Los servicios activos:
+
+- **Pi-hole** — DNS y bloqueo de red, sirve también como DNS del tailnet
+- **n8n** — automatización y orquestación, con pipelines hacia Telegram
+- **Vaultwarden** — gestor de contraseñas compatible con Bitwarden
+- **Beszel** — monitorización del sistema
+- **Uptime Kuma** — monitorización de servicios
+- **RustDesk** — acceso remoto self-hosted
+- **Stirling PDF** — manipulación de PDFs con OCR integrado
+- **rembg** — eliminación de fondos de imágenes por IA, local y sin llamadas externas
+- **Actual Budget** — finanzas personales
+- **Dockge** — gestión de stacks de Compose
+
+La red doméstica entra por un **MikroTik hEX** con el router del ISP en DMZ, y dos
+**TP-Link AX58** como APs en modo EasyMesh.
+
+---
+
+## Bloque 1 — VLANs en el MikroTik
+
+Lo primero porque es independiente de todo lo demás y es el cambio más estructural.
+
+La red ahora mismo es plana — todos los dispositivos conviven en el mismo segmento. El
+objetivo es segmentarla en VLANs:
+
+- **VLAN 10** — Management (NUC, administración del hEX)
+- **VLAN 20** — Servidores (NUC y sus servicios, Pi-hole)
+- **VLAN 30** — PCs de confianza
+- **VLAN 40** — IoT / Impresoras
+- **VLAN 50** — WiFi (AX58 como APs con SSIDs separados por VLAN)
+
+Con reglas de firewall inter-VLAN para que IoT no pueda hablar con nada más que WAN, y QoS
+por equipo para priorizar lo que importa.
+
+Tailscale activo durante todo el proceso como red de rescate — si algo rompe el acceso local,
+tengo cómo entrar igualmente.
+
+---
+
+## Bloque 2 — Infraestructura Docker + reinicios de red
+
+Este bloque tiene tres partes que tienen sentido hacer en el mismo pase porque implican tocar
+todos los composes de todas formas.
+
+### 2A — Reinicios programados de dispositivos de red
+
+El MikroTik tiene scheduler nativo en RouterOS. Los AX58 también desde la interfaz web. El
+plan es escalonar los reinicios de madrugada con 2-3 minutos entre dispositivos para que la
+red no caiga toda a la vez.
+
+El router del ISP se deja fuera — no es mío y tocarlo tiene más riesgo que beneficio.
+
+### 2B — Dockge → Dockhand
+
+Como ya escribí en el post anterior, Dockge tiene desarrollo parado. **Dockhand** es el
+sustituto natural — contenedor único, SQLite, escaneo de vulnerabilidades integrado, OIDC
+gratuito y logs en vivo de vuelta.
+
+La migración implica levantar Dockhand en paralelo, migrar stacks uno a uno y cerrar Dockge
+cuando todo esté validado.
+
+### 2C — Nginx Proxy Manager → Traefik
+
+**Traefik** permite dos cosas que NPM no tiene:
+
+- **Auto-discovery de Docker** — cada contenedor nuevo solo necesita unas labels en el compose,
+  sin tocar ninguna interfaz
+- **On-demand containers** — puede levantar un contenedor parado cuando llega una petición y
+  apagarlo tras X minutos de inactividad
+
+Cada stack que se migre a Dockhand en el paso anterior recibe las labels de Traefik en el mismo
+pase. Un solo recorrido por todos los composes para hacer los dos cambios a la vez.
+
+---
+
+## Bloque 3 — Servicios on-demand
+
+Con Traefik en marcha, algunos servicios no necesitan estar corriendo todo el tiempo.
+
+- **Stirling PDF** — se levanta cuando alguien abre la web, se apaga solo tras inactividad
+- **Actual Budget** — igual
+- **rembg** — candidato también, solo se usa puntualmente
+- **n8n** — se queda siempre activo; los webhooks de Telegram necesitan que esté escuchando
+  y el delay de arranque rompería el flujo
+
+---
+
+## Bloque 4 — Peppermint: tickets domésticos
+
+El último bloque, más por comodidad que por necesidad técnica.
+
+**Peppermint** es un helpdesk minimalista que corre en Docker. La idea es que cualquiera en
+casa pueda abrir un ticket desde una web sencilla — sin cuenta, sin complicaciones — y yo los
+gestione en un kanban.
+
+El webhook de Peppermint conecta con n8n para que cada ticket nuevo llegue como notificación
+a Telegram con el detalle. Así no tengo que estar mirando el panel para enterarme de que
+algo necesita atención.
+
+---
+
+## El orden importa
+
+```
+Bloque 1 (VLANs)
+    ↓
+Bloque 2A (reinicios red) → 2B (Dockhand) → 2C (Traefik)
+    ↓
+Bloque 3 (on-demand)
+    ↓
+Bloque 4 (Peppermint)
+```
+
+Los bloques 2 y 3 tienen dependencia directa — on-demand requiere Traefik. El resto son
+independientes entre sí y pueden ir en paralelo si hay tiempo y ganas.
+
+El homelab nunca está terminado. Pero al menos ahora sé en qué orden roto las cosas.
