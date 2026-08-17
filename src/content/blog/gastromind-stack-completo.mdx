@@ -1,0 +1,21 @@
+---
+title: "Gastromind: todo el stack del proyecto de fin de ciclo en el NUC"
+date: "2026-05-10"
+excerpt: "Redis, PostgreSQL, phpMyAdmin, MongoDB, Spring Boot, Angular y Odoo corriendo a la vez en el NUC — el único grupo del ciclo que lo consiguió."
+tags: ["milestone", "stack"]
+---
+
+Mientras terminaba DAM, me metí en la carrera de desplegar **todo** el stack de Gastromind
+(nuestra app de gestión de almacenamiento de alimentos para casa) enteramente en el NUC.
+
+Todo menos el React Native, que fuimos alojando en los servidores de expo.dev. El resto —
+Redis, PostgreSQL, phpMyAdmin, MongoDB, Spring Boot y Angular, más **Odoo** por requisito del
+proyecto — vivía en el NUC, compartiendo una tailnet de Tailscale con mis compañeros, con
+accesos controlados: podían usar la app, pero nada de SSH ni entrar al panel de n8n.
+
+Ninguno de los demás grupos del ciclo llegó a tener el stack completo desplegado para la
+presentación. Nosotros sí. Después de presentar, bajé todos los servicios del proyecto y dejé
+el NUC limpio otra vez, solo con lo personal.
+
+Fue el primer uso "serio" del homelab, y la prueba de que el NUC podía sostener bastante más
+de lo que parecía cuando lo compré por 80€.

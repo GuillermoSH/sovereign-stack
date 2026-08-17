@@ -1,18 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&family=Fira+Code:wght@500;600&display=swap');
+/* Fonts load via a <link> in index.html, not @import here — an @import inside
+   the stylesheet blocks on a second round-trip before the rest of the CSS can
+   even parse; the HTML link lets the browser discover and fetch it immediately. */
 
-/* Dark (default) */
+/* Dark (default) — one step darker across the board than the previous pass. */
 :root {
   --content-max: 1200px;
   --text: #a8b6cc;
   --text-h: #f8fbff;
   --text-muted: #7b8ba5;
-  --bg: #070a12;
-  --bg-elevated: rgba(14, 22, 40, 0.78);
-  --surface: rgba(17, 27, 47, 0.64);
+  --bg: #05060d;
+  --bg-elevated: rgba(10, 15, 28, 0.78);
+  --bg-band: #0b101c;
+  --surface: rgba(12, 19, 33, 0.64);
   --surface-border: rgba(136, 148, 255, 0.25);
   --border: rgba(118, 130, 255, 0.22);
   --border-strong: rgba(171, 145, 255, 0.42);
-  --code-bg: rgba(30, 27, 75, 0.5);
+  --code-bg: rgba(21, 19, 53, 0.5);
   --code-fg: #e2e8f0;
   --code-border: rgba(129, 140, 248, 0.22);
   --accent: #8ea2ff;
@@ -20,22 +23,17 @@
   --accent-bg: rgba(142, 162, 255, 0.13);
   --accent-border: rgba(173, 150, 255, 0.46);
   --cyan: #38bdf8;
-  --header-bg: rgba(7, 10, 18, 0.82);
+  --status-online: #34d399;
+  --header-bg: rgba(5, 6, 13, 0.82);
+  --panel-bg: #0c0f1a;
   --header-border: rgba(126, 141, 255, 0.24);
   --nav-hover-bg: rgba(142, 162, 255, 0.14);
-  --grid-line: rgba(129, 140, 248, 0.05);
-  --mesh-1: rgba(99, 102, 241, 0.42);
-  --mesh-2: rgba(56, 189, 248, 0.16);
-  --mesh-3: rgba(139, 92, 246, 0.2);
-  --page-radial: rgba(99, 102, 241, 0.2);
-  --bento-shadow: 0 18px 44px -20px rgba(2, 6, 23, 0.8);
-  --bento-hover-shadow: 0 26px 56px -18px rgba(79, 70, 229, 0.32);
-  --pill-bg: rgba(17, 27, 47, 0.68);
+  --shadow-hover: 0 8px 20px -8px rgba(2, 6, 23, 0.5);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --pill-bg: rgba(12, 19, 33, 0.68);
   --pill-border: rgba(142, 162, 255, 0.3);
   --pill-fg: #e6ebff;
-  --closing-border: rgba(100, 116, 139, 0.45);
-  --closing-bg: rgba(15, 23, 42, 0.52);
-  --footer-bg: #090d17;
+  --footer-bg: #070a12;
   --footer-text: #9fb0c9;
   --focus-ring: #8ea2ff;
   --space-1: 0.25rem;
@@ -47,20 +45,11 @@
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 20px;
-  --hero-img-shadow:
-    drop-shadow(0 28px 56px rgba(0, 0, 0, 0.55)) drop-shadow(0 12px 28px rgba(0, 0, 0, 0.35))
-    drop-shadow(0 0 72px rgba(99, 102, 241, 0.22));
-  --bento-card-bg: linear-gradient(
-    155deg,
-    rgba(15, 23, 42, 0.85) 0%,
-    rgba(15, 23, 42, 0.45) 100%
-  );
-  --bento-card-accent-bg: linear-gradient(
-    155deg,
-    rgba(30, 27, 75, 0.5) 0%,
-    rgba(15, 23, 42, 0.65) 100%
-  );
-  --bento-card-accent-border: rgba(56, 189, 248, 0.25);
+  --z-dropdown: 40;
+  --z-sticky: 50;
+  --z-modal-backdrop: 60;
+  --z-modal: 70;
+  --info-block-accent-border: rgba(56, 189, 248, 0.55);
 
   --sans: 'Manrope', 'Segoe UI', sans-serif;
   --heading: 'Sora', 'Aptos', sans-serif;
@@ -71,11 +60,6 @@
   color-scheme: dark;
   color: var(--text);
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 100% 70% at 50% -25%, var(--mesh-1), transparent 50%),
-    radial-gradient(ellipse 70% 50% at 110% 10%, var(--mesh-2), transparent 45%),
-    radial-gradient(ellipse 55% 45% at -10% 80%, var(--mesh-3), transparent 50%);
-  background-attachment: fixed;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -92,6 +76,7 @@
   --text-muted: #5f748f;
   --bg: #eef3fb;
   --bg-elevated: rgba(255, 255, 255, 0.92);
+  --bg-band: #e2e9f4;
   --surface: rgba(255, 255, 255, 0.82);
   --surface-border: rgba(99, 102, 241, 0.22);
   --border: rgba(79, 70, 229, 0.18);
@@ -104,38 +89,19 @@
   --accent-bg: rgba(79, 92, 255, 0.1);
   --accent-border: rgba(79, 92, 255, 0.38);
   --cyan: #0891b2;
+  --status-online: #059669;
   --header-bg: rgba(255, 255, 255, 0.9);
+  --panel-bg: #ffffff;
   --header-border: rgba(148, 163, 184, 0.42);
   --nav-hover-bg: rgba(79, 92, 255, 0.1);
-  --grid-line: rgba(15, 23, 42, 0.06);
-  --mesh-1: rgba(99, 102, 241, 0.12);
-  --mesh-2: rgba(56, 189, 248, 0.08);
-  --mesh-3: rgba(139, 92, 246, 0.1);
-  --page-radial: rgba(99, 102, 241, 0.1);
-  --bento-shadow: 0 18px 44px -18px rgba(15, 23, 42, 0.14);
-  --bento-hover-shadow: 0 24px 56px -16px rgba(79, 70, 229, 0.2);
+  --shadow-hover: 0 8px 20px -8px rgba(15, 23, 42, 0.18);
   --pill-bg: rgba(255, 255, 255, 0.94);
   --pill-border: rgba(79, 92, 255, 0.24);
   --pill-fg: #1b2942;
-  --closing-border: rgba(148, 163, 184, 0.55);
-  --closing-bg: rgba(255, 255, 255, 0.72);
   --footer-bg: #e8edf3;
   --footer-text: #546b86;
   --focus-ring: #4251eb;
-  --hero-img-shadow:
-    drop-shadow(0 22px 44px rgba(15, 23, 42, 0.14)) drop-shadow(0 10px 22px rgba(15, 23, 42, 0.1))
-    drop-shadow(0 0 56px rgba(99, 102, 241, 0.12));
-  --bento-card-bg: linear-gradient(
-    155deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(241, 245, 249, 0.88) 100%
-  );
-  --bento-card-accent-bg: linear-gradient(
-    155deg,
-    rgba(224, 231, 255, 0.65) 0%,
-    rgba(255, 255, 255, 0.92) 100%
-  );
-  --bento-card-accent-border: rgba(56, 189, 248, 0.28);
+  --info-block-accent-border: rgba(8, 145, 178, 0.5);
   color-scheme: light;
 }
 
@@ -170,20 +136,6 @@ body {
   z-index: 1;
 }
 
-#root::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  pointer-events: none;
-  z-index: 0;
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(180deg, black 0%, transparent 85%);
-}
-
 h1,
 h2,
 h3 {
@@ -193,15 +145,16 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(1.85rem, 3.8vw, 2.8rem);
+  font-size: clamp(2.2rem, 5.2vw, 3.6rem);
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.05;
   margin: 0 0 0.7rem;
 }
 
 h2 {
-  font-size: clamp(1.08rem, 1.7vw, 1.36rem);
-  letter-spacing: -0.018em;
+  font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   margin: 0 0 0.5rem;
 }
 

@@ -1,0 +1,25 @@
+---
+title: "De Portainer a Dockge: lo que gané y lo que perdí"
+date: "2026-05-22"
+excerpt: "Portainer aguantó hasta la presentación del proyecto. Justo después lo cambié por algo más simple — y perdí los logs en vivo por el camino."
+tags: ["stack", "dockge"]
+---
+
+No empecé con **Dockge**. El gestor de Compose original fue **Portainer**, que se quedó hasta
+la presentación de Gastromind. Tenía multiusuario, logs en vivo, gestión de stacks,
+monitorización de sistema y contenedores, vista de volúmenes... En su momento era justo lo que
+necesitaba para manejar varios servicios de gente distinta a la vez.
+
+Justo después de entregar el proyecto lo cambié por **Dockge**, buscando algo más simple para
+mi día a día — ya no necesitaba nada multiusuario ni tan cargado de funciones. Y ahí perdí una
+pieza que echo de menos: **ver logs en vivo desde la propia interfaz**. Ahora eso lo hago por
+terminal, vía SSH:
+
+```bash
+docker compose logs -f <servicio>
+```
+
+No es tan cómodo como tenerlo integrado, pero para lo que uso el homelab hoy, el resto de
+Dockge compensa. Aun así, ya tiene fecha de caducidad: en los hilos de homelabbing de Reddit se
+comenta que se va a dejar de mantener, así que el siguiente salto probablemente sea a
+**Dockhand**, uno de los forks activos.

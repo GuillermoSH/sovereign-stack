@@ -1,0 +1,25 @@
+---
+title: "Ubuntu Server 24.04: el primer arranque del NUC"
+date: "2026-03-02"
+excerpt: "80€ en Wallapop, 16 GB de RAM DDR4 y un Celeron N5105 de regalo. Esa misma tarde ya tenía Ubuntu Server instalado."
+tags: ["host", "os"]
+---
+
+Llevaba tiempo detrás de un PC pequeño así, mirando Wallapop sin parar, hasta que apareció
+este **Intel NUC11ATKC4** por **80€**: 16 GB de RAM DDR4 y 500 GB de NVMe, con un Celeron
+N5105 de acompañante. Solo la RAM ya vale más de 120€ por separado, así que no lo pensé.
+
+Esa misma tarde, antes incluso de sacarlo de la mesa del salón, le metí **Ubuntu Server
+24.04 LTS**. Sin plantearme nada más — es lo que sabía que se usaba en servidores, después
+de varios intentos fallidos de montarme un VPS gratuito en Oracle Cloud que nunca prosperaron
+por la alta demanda del servicio.
+
+Sin entorno gráfico, todo por **SSH**, con Docker como ciudadano de primera clase desde el
+minuto uno. Le he dado vueltas más de una vez a meter Proxmox en su lugar, pero para lo que
+uso el NUC hoy (nada expuesto hacia fuera, ningún tercero necesitando acceder a algo que no
+debería) no lo veo necesario. Sigo con Ubuntu.
+
+Lo dejé en la sala esa misma tarde y empecé a trastear en remoto desde mi ordenador principal.
+El primer servicio que subí fue **n8n** — lo conocía de mis prácticas en TenaAsesores, así
+que fue el candidato natural para empezar a automatizar cosas del propio homelab. Ese NUC fue
+la semilla de todo lo demás.

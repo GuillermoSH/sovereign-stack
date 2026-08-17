@@ -25,8 +25,8 @@ ciertos y representativos. No hay cambios de fondo aquí.
 **ACTUALIZAR** — el cuerpo actual (`N5105`, `16GB`, `500GB NVMe`) es correcto, se
 mantiene tal cual. Añado color opcional:
 
-> Intel NUC11ATKC4 — N5105, 16 GB DDR5, 500 GB NVMe. Comprado de segunda mano en
-> Wallapop por 80€, tras buscarlo durante tiempo — esa cantidad de RAM DDR5 sola ya
+> Intel NUC11ATKC4 — N5105, 16 GB DDR4, 500 GB NVMe. Comprado de segunda mano en
+> Wallapop por 80€, tras buscarlo durante tiempo — esa cantidad de RAM DDR4 sola ya
 > vale más que eso. Se instaló Ubuntu Server esa misma tarde, sin darle más vueltas.
 
 - ❓ **DECISIÓN:** ¿quieres el detalle "80€ en Wallapop" en la landing (le da carácter

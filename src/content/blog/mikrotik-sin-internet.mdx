@@ -1,0 +1,24 @@
+---
+title: "El MikroTik y los tres días sin internet"
+date: "2026-03-16"
+excerpt: "Un regalo familiar, cero idea de RouterOS y la casa entera sin conexión mientras aprendía a base de prueba y error."
+tags: ["network", "mikrotik"]
+---
+
+El MikroTik hEX llegó de regalo de un familiar del mundillo: me lo dio para que trasteara sin
+saber absolutamente nada de RouterOS. Aproveché que mis padres se iban de vacaciones para
+ponerme con él en serio — si algo salía mal, el único perjudicado sería yo.
+
+Y así fue. Fueron **dos o tres días sin internet en toda la casa** mientras aprendía a base de
+ensayo y error: consultando a la IA por conceptos que no entendía, tirando de hilos de Reddit,
+rehaciendo la configuración cuando algo dejaba de funcionar. El punto más gracioso — o
+frustrante, según el día — fue dejar el **DNS** mal apuntado y no poder ni descargar imágenes
+de Docker durante un buen rato.
+
+Al final quedó montado: el ISP en modo bridge y DMZ hacia el MikroTik (para no delegarle
+resolución de NATs), y desde ahí la LAN hacia el NUC y los futuros puntos de acceso. También
+tuve que dejar salida específica hacia el dispositivo de televisión de Movistar, porque con mi
+propio DNS dejaba de encontrar sus servidores.
+
+Las VLANs (separar dispositivos, red de invitados, IoT, QoS) siguen en el papel — están
+pensadas desde hace tiempo, pero aún no las he montado.
