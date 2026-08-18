@@ -5,6 +5,8 @@ excerpt: "Tengo varios cambios pendientes en el homelab. Los he agrupado en bloq
 tags: ["stack", "homelab", "roadmap", "traefik", "vlans", "dockhand"]
 ---
 
+import { FlowChain } from '../../components/FlowChain'
+
 El homelab no para quieto. Hay servicios que funcionan bien, otros que funcionan pero tienen
 sustituto mejor, y cosas que simplemente no están hechas todavía. En lugar de ir cambiando
 cosas al azar, lo he organizado en bloques con dependencias claras entre ellos.
@@ -118,15 +120,22 @@ algo necesita atención.
 
 ## El orden importa
 
-```
-Bloque 1 (VLANs)
-    ↓
-Bloque 2A (reinicios red) → 2B (Dockhand) → 2C (Traefik)
-    ↓
-Bloque 3 (on-demand)
-    ↓
-Bloque 4 (Peppermint)
-```
+<FlowChain
+  stages={[
+    { label: 'Bloque 1', detail: 'VLANs' },
+    {
+      label: 'Bloque 2',
+      detail: 'infraestructura Docker + reinicios de red',
+      sub: [
+        { label: '2A', detail: 'reinicios red' },
+        { label: '2B', detail: 'Dockhand' },
+        { label: '2C', detail: 'Traefik' },
+      ],
+    },
+    { label: 'Bloque 3', detail: 'on-demand' },
+    { label: 'Bloque 4', detail: 'Peppermint' },
+  ]}
+/>
 
 Los bloques 2 y 3 tienen dependencia directa — on-demand requiere Traefik. El resto son
 independientes entre sí y pueden ir en paralelo si hay tiempo y ganas.

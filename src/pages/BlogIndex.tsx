@@ -15,30 +15,31 @@ export default function BlogIndex() {
           solo enseña las últimas entradas — aquí está todo.
         </p>
       </div>
-      <ol ref={reveal} className="blog-list reveal" aria-label="Entradas del blog">
+      <ol ref={reveal} className="blog-log reveal" aria-label="Entradas del blog">
         {posts.map((post) => (
-          <li key={post.slug}>
+          <li key={post.slug} className="blog-log__entry">
+            <time className="blog-log__date" dateTime={post.date}>
+              {formatPostDate(post.date)}
+            </time>
+            <div className="blog-log__rail" aria-hidden="true">
+              <span className="blog-log__node" />
+            </div>
             <Link to={`/blog/${post.slug}`} className="blog-card">
-              <div className="blog-card__head">
-                <time className="update-entry__date" dateTime={post.date}>
-                  {formatPostDate(post.date)}
-                </time>
-                {post.tags && post.tags.length > 0 ? (
-                  <ul className="update-entry__tags" aria-label="Etiquetas">
-                    {post.tags.map((tag) => {
-                      const Icon = getTagIcon(tag)
-                      return (
-                        <li key={tag}>
-                          <span className="update-entry__tag">
-                            <Icon className="update-entry__tag-icon" aria-hidden="true" />
-                            {tag}
-                          </span>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                ) : null}
-              </div>
+              {post.tags && post.tags.length > 0 ? (
+                <ul className="update-entry__tags blog-card__tags" aria-label="Etiquetas">
+                  {post.tags.map((tag) => {
+                    const Icon = getTagIcon(tag)
+                    return (
+                      <li key={tag}>
+                        <span className="update-entry__tag">
+                          <Icon className="update-entry__tag-icon" aria-hidden="true" />
+                          {tag}
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : null}
               <h2 className="blog-card__title">{post.title}</h2>
               {post.excerpt ? <p className="blog-card__excerpt">{post.excerpt}</p> : null}
             </Link>

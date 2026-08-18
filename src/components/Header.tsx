@@ -60,6 +60,7 @@ export default function Header({ lang, onToggleLang, theme, onToggleTheme, activ
   type MegaMode = 'closed' | 'hover' | 'pinned'
   const [megaMode, setMegaMode] = useState<MegaMode>('closed')
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 8)
   const megaOpen = megaMode !== 'closed'
   const megaPinned = megaMode === 'pinned'
   const megaBtnRef = useRef<HTMLButtonElement>(null)
@@ -118,6 +119,13 @@ export default function Header({ lang, onToggleLang, theme, onToggleTheme, activ
   })
 
   useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
     return () => window.clearTimeout(hoverCloseTimer.current)
   }, [])
 
@@ -166,7 +174,7 @@ export default function Header({ lang, onToggleLang, theme, onToggleTheme, activ
   return (
     <>
       <header
-        className="site-header"
+        className={`site-header ${scrolled || megaOpen ? 'is-scrolled' : ''}`}
         onMouseEnter={clearHoverClose}
         onMouseLeave={scheduleHoverClose}
       >

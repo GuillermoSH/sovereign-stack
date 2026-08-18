@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { formatPostDate, getPost, slugifyHeading } from '../blog'
 import { estimateReadingMinutes } from '../readingTime'
 import { getTagIcon } from '../tagIcons'
+import { ListIcon } from '../icons/ui'
 
 interface TocItem {
   id: string
@@ -15,6 +16,7 @@ export default function BlogPost() {
   const post = slug ? getPost(slug) : undefined
   const bodyRef = useRef<HTMLDivElement>(null)
   const [toc, setToc] = useState<TocItem[]>([])
+  const [activeId, setActiveId] = useState('')
   const readingMinutes = useMemo(
     () => (post ? estimateReadingMinutes(post.Component) : 0),
     [post],
@@ -41,6 +43,40 @@ export default function BlogPost() {
     })
     setToc(items)
   }, [post?.slug])
+
+  // Scrollspy: highlights the heading currently at the top of the viewport so the
+  // index reads as a live position marker, not a static list of links.
+  useEffect(() => {
+    if (toc.length < 2) return
+    const headingEls = toc
+      .map((item) => document.getElementById(item.id))
+      .filter((el): el is HTMLElement => el instanceof HTMLElement)
+    if (!headingEls.length) return
+
+    const topOffset = 96
+    let raf = 0
+    const pick = () => {
+      raf = 0
+      let current = headingEls[0].id
+      for (const el of headingEls) {
+        if (el.getBoundingClientRect().top <= topOffset) current = el.id
+        else break
+      }
+      setActiveId(current)
+    }
+    const schedule = () => {
+      if (raf) return
+      raf = requestAnimationFrame(pick)
+    }
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule, { passive: true })
+    pick()
+    return () => {
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [toc])
 
   if (!post) {
     return <Navigate to="/blog" replace />
@@ -83,7 +119,10 @@ export default function BlogPost() {
 
       {toc.length > 1 ? (
         <nav className="blog-post__toc" aria-label="Índice del artículo">
-          <p className="blog-post__toc-label">Índice</p>
+          <p className="blog-post__toc-label">
+            <ListIcon className="blog-post__toc-label-icon" aria-hidden="true" />
+            Índice
+          </p>
           <ol className="blog-post__toc-list">
             {toc.map((item) => (
               <li
@@ -92,7 +131,9 @@ export default function BlogPost() {
                   item.depth === 3 ? 'blog-post__toc-item blog-post__toc-item--sub' : 'blog-post__toc-item'
                 }
               >
-                <a href={`#${item.id}`}>{item.text}</a>
+                <a href={`#${item.id}`} aria-current={item.id === activeId ? 'location' : undefined}>
+                  {item.text}
+                </a>
               </li>
             ))}
           </ol>
