@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { strings, type Lang } from '../i18n'
 import { useTheme } from '../useTheme'
+import Footer from './Footer'
 import Header from './Header'
 import '../App.css'
 
@@ -19,6 +20,7 @@ export default function BlogLayout() {
   const { theme, toggleTheme } = useTheme()
   const [lang, setLang] = useState<Lang>(readLang)
   const t = strings[lang]
+  const location = useLocation()
 
   useEffect(() => {
     document.documentElement.lang = lang
@@ -43,18 +45,12 @@ export default function BlogLayout() {
       />
 
       <main id="main">
-        <div className="layout-shell">
+        <div className="layout-shell page-enter" key={location.pathname}>
           <Outlet />
         </div>
       </main>
 
-      <footer className="site-footer">
-        <div className="site-footer__bar">
-          <div className="layout-shell site-footer__bar-inner">
-            <p>{t.footer}</p>
-          </div>
-        </div>
-      </footer>
+      <Footer lang={lang} footerText={t.footer} />
     </>
   )
 }

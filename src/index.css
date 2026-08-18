@@ -24,8 +24,8 @@
   --accent-border: rgba(173, 150, 255, 0.46);
   --cyan: #38bdf8;
   --status-online: #34d399;
-  --header-bg: rgba(5, 6, 13, 0.82);
-  --panel-bg: #0c0f1a;
+  --header-bg: rgba(11, 15, 28, 0.94);
+  --panel-bg: rgba(11, 15, 28, 0.97);
   --header-border: rgba(126, 141, 255, 0.24);
   --nav-hover-bg: rgba(142, 162, 255, 0.14);
   --shadow-hover: 0 8px 20px -8px rgba(2, 6, 23, 0.5);
@@ -90,8 +90,8 @@
   --accent-border: rgba(79, 92, 255, 0.38);
   --cyan: #0891b2;
   --status-online: #059669;
-  --header-bg: rgba(255, 255, 255, 0.9);
-  --panel-bg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.94);
+  --panel-bg: rgba(255, 255, 255, 0.97);
   --header-border: rgba(148, 163, 184, 0.42);
   --nav-hover-bg: rgba(79, 92, 255, 0.1);
   --shadow-hover: 0 8px 20px -8px rgba(15, 23, 42, 0.18);

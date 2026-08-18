@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './index.css'
 import App from './App.tsx'
+import ScrollToTop from './components/ScrollToTop.tsx'
 
 // Landing ("/") stays eager — it's the entry point. Blog is a secondary path;
 // splitting it out keeps its MDX/rendering weight off the landing's bundle.
@@ -13,6 +14,7 @@ const BlogPost = lazy(() => import('./pages/BlogPost.tsx'))
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+      <ScrollToTop />
       <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={<App />} />

@@ -231,3 +231,52 @@ export function PhotoIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function FlagIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M5 3v18" />
+      <path d="M5 4.5c2-1.4 4-1.4 6 0s4 1.4 6 0v8c-2 1.4-4 1.4-6 0s-4-1.4-6 0Z" />
+    </svg>
+  )
+}
+
+export function HomeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9.5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10" />
+      <path d="M10 20.5V15h4v5.5" />
+    </svg>
+  )
+}
+
+export function NetworkIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="4.6" r="1.8" />
+      <circle cx="5" cy="19" r="1.8" />
+      <circle cx="19" cy="19" r="1.8" />
+      <path d="M12 6.4v4.5M12 10.9 5 17.2M12 10.9l7 6.3" />
+    </svg>
+  )
+}
+
+export function ArchiveIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M3 9.5 6 4h12l3 5.5" />
+      <rect x="3" y="9.5" width="18" height="10.5" rx="1.2" />
+      <path d="M9.5 13.5h5" />
+    </svg>
+  )
+}
+
+export function TagIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 4h7l9 9-7 7-9-9V4Z" />
+      <path d="M8 8h.01" />
+    </svg>
+  )
+}

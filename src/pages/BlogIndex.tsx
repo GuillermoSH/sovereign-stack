@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { formatPostDate, posts } from '../blog'
+import { getTagIcon } from '../tagIcons'
 import { useReveal } from '../useReveal'
 
 export default function BlogIndex() {
@@ -24,11 +25,17 @@ export default function BlogIndex() {
                 </time>
                 {post.tags && post.tags.length > 0 ? (
                   <ul className="update-entry__tags" aria-label="Etiquetas">
-                    {post.tags.map((tag) => (
-                      <li key={tag}>
-                        <span className="update-entry__tag">{tag}</span>
-                      </li>
-                    ))}
+                    {post.tags.map((tag) => {
+                      const Icon = getTagIcon(tag)
+                      return (
+                        <li key={tag}>
+                          <span className="update-entry__tag">
+                            <Icon className="update-entry__tag-icon" aria-hidden="true" />
+                            {tag}
+                          </span>
+                        </li>
+                      )
+                    })}
                   </ul>
                 ) : null}
               </div>

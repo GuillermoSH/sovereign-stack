@@ -30,6 +30,20 @@ export const posts: Post[] = Object.entries(modules)
   })
   .sort((a, b) => b.date.localeCompare(a.date))
 
+/** Slug de anchor determinista para encabezados del cuerpo del post (usado por el índice). */
+export function slugifyHeading(text: string): string {
+  const diacritics = new RegExp('[\\u0300-\\u036f]', 'g')
+  const slug = text
+    .normalize('NFD')
+    .replace(diacritics, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  // Un id que empieza por dígito es válido en HTML pero rompe selectores CSS
+  // (querySelector, :target styling) — se prefija por si algo lo necesita.
+  return /^[0-9]/.test(slug) ? `s-${slug}` : slug
+}
+
 export function getPost(slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug)
 }

@@ -81,3 +81,45 @@ export function BeszelIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+/* Iconos de etiquetas de la bitácora: glifos genéricos propios en vez de logos
+   vendorizados — evita arrastrar un trazado de marca inexacto solo para un chip. */
+
+export function DockerIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="4" y="8" width="16" height="12" rx="1.2" />
+      <path d="M4 8 12 4l8 4M12 4v4" />
+    </svg>
+  )
+}
+
+export function DockhandIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="4" y="4" width="16" height="7" rx="1.4" />
+      <rect x="4" y="13" width="16" height="7" rx="1.4" />
+      <circle cx="17" cy="7.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="17" cy="16.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function TraefikIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 12h6M9 12 6.5 9.5M9 12l-2.5 2.5" />
+      <rect x="10" y="5" width="4" height="14" rx="1" />
+      <path d="M21 12h-6M15 12l2.5-2.5M15 12l2.5 2.5" />
+    </svg>
+  )
+}
+
+export function MinecraftIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12 3 20 7.5v9L12 21 4 16.5v-9Z" />
+      <path d="M12 3v9M12 12 4 7.5M12 12l8-4.5" />
+    </svg>
+  )
+}
