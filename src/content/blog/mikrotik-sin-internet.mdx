@@ -1,24 +1,44 @@
 ---
 title: "El MikroTik y los tres días sin internet"
-date: "2026-03-16"
+date: "2026-04-01"
 excerpt: "Un regalo familiar, cero idea de RouterOS y la casa entera sin conexión mientras aprendía a base de prueba y error."
 tags: ["network", "mikrotik"]
 ---
 
-El MikroTik hEX llegó de regalo de un familiar del mundillo: me lo dio para que trasteara sin
-saber absolutamente nada de RouterOS. Aproveché que mis padres se iban de vacaciones para
-ponerme con él en serio — si algo salía mal, el único perjudicado sería yo.
+## El regalo y el plan
 
-Y así fue. Fueron **dos o tres días sin internet en toda la casa** mientras aprendía a base de
-ensayo y error: consultando a la IA por conceptos que no entendía, tirando de hilos de Reddit,
-rehaciendo la configuración cuando algo dejaba de funcionar. El punto más gracioso — o
-frustrante, según el día — fue dejar el **DNS** mal apuntado y no poder ni descargar imágenes
-de Docker durante un buen rato.
+El MikroTik hEX llegó de regalo de un familiar del mundillo: me lo dio para que trasteara sin
+saber absolutamente nada de RouterOS. Aproveché que era Semana Santa, con mis padres de
+vacaciones y yo sin clases, para ponerme con él en serio — si algo salía mal, el único
+perjudicado sería yo.
+
+## Dos o tres días sin internet
+
+Y así fue. Fueron **dos o tres días sin internet en condiciones en toda la casa**, porque no
+me limité a montar el MikroTik: quise dejar en el mismo tirón **Nginx Proxy Manager** y
+**Pi-hole** funcionando de una vez. Levantarme, sentarme con esto y no soltarlo hasta la
+noche, a ver si por fin lo dejaba cerrado. No siempre era un apagón total — había días en que
+"solo" iba mal, o no cargaba todo internet, según cómo tuviera el DNS apuntado en cada
+momento. Como además andaba tocando los **mangles** del MikroTik, había cosas que fallaban
+sin que ese fuera realmente el problema; iba bastante a ciegas porque tampoco sabía lo
+suficiente como para distinguir un fallo de otro.
+
+Aprendí a base de ensayo y error: consultando a la IA por conceptos que no entendía, tirando
+de hilos de Reddit, rehaciendo la configuración cada vez que algo dejaba de funcionar. El
+punto más gracioso — o frustrante, según el día — fue dejar el **DNS** mal apuntado y no poder
+ni descargar imágenes de Docker durante un buen rato. Por suerte dejé el dispositivo de
+Movistar para la TV fuera de la red nueva desde el principio, sobre todo para que no le diera
+problemas con su propio DNS — así al menos podía ver la tele mientras el resto de la casa
+estaba a medio gas.
+
+## La prueba de fuego
 
 Al final quedó montado: el ISP en modo bridge y DMZ hacia el MikroTik (para no delegarle
-resolución de NATs), y desde ahí la LAN hacia el NUC y los futuros puntos de acceso. También
-tuve que dejar salida específica hacia el dispositivo de televisión de Movistar, porque con mi
-propio DNS dejaba de encontrar sus servidores.
+resolución de NATs), y desde ahí la LAN hacia el NUC y los futuros puntos de acceso. La prueba
+de fuego fue entrar en marca.com y no ver ni un solo anuncio — ahí supe que Pi-hole por fin
+estaba resolviendo como tocaba.
+
+## Lo que queda pendiente
 
 Las VLANs (separar dispositivos, red de invitados, IoT, QoS) siguen en el papel — están
 pensadas desde hace tiempo, pero aún no las he montado.

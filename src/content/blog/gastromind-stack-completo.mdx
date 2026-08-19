@@ -1,21 +1,82 @@
 ---
 title: "Gastromind: todo el stack del proyecto de fin de ciclo en el NUC"
 date: "2026-05-10"
-excerpt: "Redis, PostgreSQL, phpMyAdmin, MongoDB, Spring Boot, Angular y Odoo corriendo a la vez en el NUC — el único grupo del ciclo que lo consiguió."
-tags: ["milestone", "stack"]
+excerpt: "Redis, PostgreSQL, pgAdmin, MongoDB, Spring Boot, Angular y Odoo corriendo a la vez en el NUC — el único grupo del ciclo que lo consiguió."
+tags: ["milestone", "stack", "docker", "cicd"]
 ---
 
-Mientras terminaba DAM, me metí en la carrera de desplegar **todo** el stack de Gastromind
-(nuestra app de gestión de almacenamiento de alimentos para casa) enteramente en el NUC.
+import { FlowChain } from '../../components/FlowChain'
 
-Todo menos el React Native, que fuimos alojando en los servidores de expo.dev. El resto —
-Redis, PostgreSQL, phpMyAdmin, MongoDB, Spring Boot y Angular, más **Odoo** por requisito del
-proyecto — vivía en el NUC, compartiendo una tailnet de Tailscale con mis compañeros, con
-accesos controlados: podían usar la app, pero nada de SSH ni entrar al panel de n8n.
+## El objetivo
+
+Uno de los planes que tenía desde que conseguí el NUC era ir metiendo ahí, con el tiempo, todo
+lo que fuésemos construyendo en **Gastromind** — nuestra app de gestión de almacenamiento de
+alimentos para casa, el proyecto de fin de ciclo — para llegar a la presentación con el stack
+entero desplegado de verdad, no corriendo en local en el portátil de turno. Entre las prácticas
+y las clases era difícil sacar hueco, así que en cuanto tuve algo de tiempo libre me puse a
+montarlo todo de una sentada.
+
+## El backend ya venía con Docker
+
+El backend usa Docker desde el arranque del proyecto: **Spring Boot**, **PostgreSQL**, **Redis**,
+**MongoDB** y **pgAdmin**. La pieza clave es un plugin de Spring que reconoce los ficheros de
+Compose del proyecto y los levanta automáticamente al hacer deploy de la API, sin tener que
+orquestar nada a mano por fuera. Eso hace que mover todo al NUC sea casi trivial — el mismo
+Compose que usamos en desarrollo es el que se despliega en producción.
+
+## El frontend llegó más tarde
+
+Faltaba la parte de cliente: **Angular** para la web y la app móvil en **React Native + Expo**.
+Angular fue baja prioridad todo el desarrollo y no se pudo levantar hasta la última semana. Expo
+se desplegó directamente en los servidores de **expo.dev**, gracias al plan de desarrolladores,
+y lo probábamos con la propia app de **Expo Go** en el móvil. En iOS, Expo Go exige HTTPS para
+conectar contra la API — ahí entró Nginx Proxy Manager con **Let's Encrypt** para servir todo
+bajo certificado válido.
+
+A todo esto se suma **Odoo**, que integramos por requisito del propio proyecto — un servicio
+más que corre junto al resto, sin relación directa con el backend de Gastromind pero con el
+mismo tratamiento: contenedor, tailnet y reverse proxy.
+
+## SSL sin abrir un solo puerto
+
+Todo el stack acaba con SSL de verdad gracias a **Nginx Proxy Manager** y **Cloudflare**: el
+DNS challenge de Let's Encrypt contra la API de Cloudflare, sin necesidad de exponer el puerto 80
+ni el 443 hacia fuera. Todo el tráfico queda resuelto en red local, con certificados válidos
+igualmente.
+
+## CI/CD con GitHub Actions
+
+Tanto el backend en Spring Boot como el stack de Expo tienen CI/CD montado con workflows de
+GitHub. La API tiene un umbral mínimo de tests para poder avanzar de rama: **60% en desarrollo**
+y **80% en producción**. Si no se llega a ese porcentaje, no hay merge ni deploy.
+
+<FlowChain
+  stages={[
+    { label: 'Push', detail: 'a la rama de desarrollo o main' },
+    { label: 'Tests', detail: 'mínimo 60% en dev, 80% en prod' },
+    { label: 'Merge', detail: 'solo si se supera el umbral' },
+    { label: 'Deploy', detail: 'en el NUC vía GitHub Actions' },
+  ]}
+/>
+
+## Acceso controlado por Tailscale
+
+Todo esto vive dentro de una tailnet de Tailscale compartida con mis compañeros, con accesos
+pensados para que cada uno pueda entrar solo a lo que le toca. **Portainer** es la puerta de
+entrada: desde ahí pueden ver logs, levantar servicios y reiniciarlos. Nada de SSH ni de entrar
+al panel de n8n.
+
+## Vigilancia y automatización desde Telegram
+
+Para no depender de que alguien esté mirando un dashboard, **Uptime Kuma** avisa de caídas en
+un grupo de Telegram creado para el equipo, con un bot de vigilancia propio que permite limpiar
+volúmenes de Docker sin usar y, si hace falta, levantar todo el stack desde el propio chat.
+
+## El resultado
 
 Ninguno de los demás grupos del ciclo llegó a tener el stack completo desplegado para la
 presentación. Nosotros sí. Después de presentar, bajé todos los servicios del proyecto y dejé
 el NUC limpio otra vez, solo con lo personal.
 
 Fue el primer uso "serio" del homelab, y la prueba de que el NUC podía sostener bastante más
-de lo que parecía cuando lo compré por 80€.
+de lo que parecía cuando lo compré por 70€.
