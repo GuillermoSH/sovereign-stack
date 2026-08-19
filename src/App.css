@@ -2564,39 +2564,19 @@ main {
 .blog-card {
   display: block;
   margin: 0;
-  padding: 1.15rem 1.25rem 1.35rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--surface-border);
-  background: color-mix(in oklab, var(--surface) 55%, transparent);
-  box-sizing: border-box;
+  padding: 1.15rem 0 0;
   min-width: 0;
   text-decoration: none;
   color: inherit;
-  transition:
-    border-color 0.22s ease,
-    box-shadow 0.22s ease,
-    transform 0.22s ease,
-    background 0.22s ease;
-}
-
-.blog-card:hover,
-.blog-card:focus-visible {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-3px);
-  background: color-mix(in oklab, var(--surface) 45%, var(--accent-bg) 16%);
 }
 
 .blog-card:focus-visible {
   outline: 2px solid var(--focus-ring);
-  outline-offset: 3px;
+  outline-offset: 6px;
+  border-radius: var(--radius-sm);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .blog-card:hover {
-    transform: none;
-  }
-
   .blog-log__entry:has(.blog-card:hover) .blog-log__node,
   .blog-log__entry:has(.blog-card:focus-visible) .blog-log__node {
     transform: none;
@@ -2615,6 +2595,12 @@ main {
   color: var(--text-h);
   margin: 0 0 0.5rem;
   line-height: 1.28;
+  transition: color 0.18s ease;
+}
+
+.blog-card:hover .blog-card__title,
+.blog-card:focus-visible .blog-card__title {
+  color: var(--accent);
 }
 
 .blog-card__excerpt {
