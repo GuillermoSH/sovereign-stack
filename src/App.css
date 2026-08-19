@@ -305,6 +305,7 @@
 
 .nav-list a,
 .nav-trigger {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
