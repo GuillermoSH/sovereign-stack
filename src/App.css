@@ -2509,7 +2509,7 @@ main {
   position: absolute;
   top: 1.75rem;
   bottom: 1.75rem;
-  left: 7.125rem;
+  left: 7.625rem;
   width: 1px;
   background: var(--border);
   pointer-events: none;
@@ -2517,7 +2517,7 @@ main {
 
 .blog-log__entry {
   display: grid;
-  grid-template-columns: 6.5rem 1.25rem 1fr;
+  grid-template-columns: 6.5rem 2.25rem 1fr;
   align-items: start;
   min-width: 0;
 }
