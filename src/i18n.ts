@@ -148,7 +148,19 @@ export const strings = {
     closingHidden: 'Closing',
     closing:
       'Homelab snapshot: infra I run, how I reach it, and what I am learning — not a tutorial, just where things stand.',
-    footer: '© 2026 GuillermoSH · Built with React, Vite and coffee.',
+    footerBio:
+      'Homelab status page — hardware, stack, and the log of how it got here. Built and run by Guillermo Sicilia Hernandez.',
+    footerBy: 'By: GuillermoSH',
+    footerMarqueeBrand: 'Sovereign Stack',
+    footerMarqueeHomelab: 'Homelab',
+    footerMarqueeJoke: 'It worked at home',
+    footerTalkLabel: "Let's talk",
+    footerNavLabel: 'On this site',
+    footerSocialsLabel: 'Social links',
+    footerCopyright: '© 2026 GuillermoSH',
+    footerRights: 'All rights reserved',
+    footerCredit: 'Built with React, Vite and',
+    footerCoffeeLabel: 'coffee',
   },
   es: {
     skipLink: 'Saltar al contenido principal',
@@ -295,7 +307,19 @@ export const strings = {
     closingHidden: 'Cierre',
     closing:
       'Instantánea del homelab: qué ejecuto, cómo entro y qué estoy aprendiendo — no es un manual, solo el estado actual.',
-    footer: '© 2026 GuillermoSH · Hecho con React, Vite y cafe.',
+    footerBio:
+      'Página de estado del homelab — hardware, stack y la bitácora de cómo se llegó aquí. Hecha y mantenida por Guillermo Sicilia Hernandez.',
+    footerBy: 'Por: GuillermoSH',
+    footerMarqueeBrand: 'Sovereign Stack',
+    footerMarqueeHomelab: 'Homelab',
+    footerMarqueeJoke: 'En mi casa funcionaba',
+    footerTalkLabel: 'Hablemos',
+    footerNavLabel: 'En este sitio',
+    footerSocialsLabel: 'Redes sociales',
+    footerCopyright: '© 2026 GuillermoSH',
+    footerRights: 'Todos los derechos reservados',
+    footerCredit: 'Hecho con React, Vite y',
+    footerCoffeeLabel: 'café',
   },
 } as const
 

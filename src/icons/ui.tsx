@@ -300,3 +300,24 @@ export function GridIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function CoffeeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M5 8h11v7.2A3.8 3.8 0 0 1 12.2 19H8.8A3.8 3.8 0 0 1 5 15.2V8Z" />
+      <path d="M16 10h1.4A2.6 2.6 0 0 1 20 12.6v0A2.6 2.6 0 0 1 17.4 15H16" />
+      <path d="M8 5.2c.35-.7.35-1.4 0-2.1" />
+      <path d="M11 5.2c.35-.7.35-1.4 0-2.1" />
+      <path d="M4 21h13" />
+    </svg>
+  )
+}
+
+export function MailIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="m4.5 7.5 7.5 6 7.5-6" />
+    </svg>
+  )
+}

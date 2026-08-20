@@ -50,7 +50,7 @@ export default function BlogLayout() {
         </div>
       </main>
 
-      <Footer lang={lang} footerText={t.footer} />
+      <Footer lang={lang} />
     </>
   )
 }

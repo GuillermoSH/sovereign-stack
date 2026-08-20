@@ -15,4 +15,8 @@ export default defineConfig({
     },
     react({ include: /\.(jsx|tsx|mdx)$/ }),
   ],
+  server: {
+    // Expose on LAN so phones/tablets can hit the same Wi‑Fi IP.
+    host: true,
+  },
 })

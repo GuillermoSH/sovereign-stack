@@ -115,6 +115,10 @@ export default function BlogIndex() {
               const sortedTags = post.tags ? sortTagsByPriority(post.tags) : []
               const visibleTags = sortedTags.slice(0, GRID_TAG_LIMIT)
               const hiddenTagCount = sortedTags.length - visibleTags.length
+              const tagsLabel =
+                hiddenTagCount > 0
+                  ? `Etiquetas: ${sortedTags.join(', ')}`
+                  : 'Etiquetas'
 
               return (
                 <li key={post.slug} ref={gridRef(i)}>
@@ -123,21 +127,19 @@ export default function BlogIndex() {
                       {formatPostDate(post.date)}
                     </time>
                     {visibleTags.length > 0 ? (
-                      <ul className="update-entry__tags blog-card__tags" aria-label="Etiquetas">
+                      <ul className="blog-grid-card__tags" aria-label={tagsLabel}>
                         {visibleTags.map((tag) => {
                           const Icon = getTagIcon(tag)
                           return (
                             <li key={tag}>
-                              <span className="update-entry__tag">
-                                <Icon className="update-entry__tag-icon" aria-hidden="true" />
-                                {tag}
-                              </span>
+                              <Icon className="blog-grid-card__tag-icon" aria-hidden="true" />
+                              <span>{tag}</span>
                             </li>
                           )
                         })}
                         {hiddenTagCount > 0 ? (
-                          <li>
-                            <span className="update-entry__tag update-entry__tag--more">+{hiddenTagCount}</span>
+                          <li className="blog-grid-card__tags-more" aria-hidden="true">
+                            +{hiddenTagCount}
                           </li>
                         ) : null}
                       </ul>
