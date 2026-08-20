@@ -149,16 +149,17 @@
 .lang-toggle__label {
   position: relative;
   z-index: 1;
+  margin-right: -0.08em;
 }
 
 /* Full flag as a pin — a 2px ring clips the Union Jack to noise; a 13px disc keeps both flags readable. */
 .lang-toggle::after {
   content: '';
   position: absolute;
-  width: 0.82rem;
-  height: 0.82rem;
-  right: -0.12rem;
-  bottom: -0.12rem;
+  width: 0.66rem;
+  height: 0.66rem;
+  right: -0.08rem;
+  bottom: -0.08rem;
   border-radius: 50%;
   background: var(--lang-flag) center / cover no-repeat;
   box-shadow: 0 0 0 1.5px var(--header-bg);
