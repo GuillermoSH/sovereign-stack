@@ -1,0 +1,26 @@
+---
+title: "Ubuntu Server 24.04: the NUC’s first boot"
+date: "2026-03-02"
+excerpt: "€70 on Wallapop, 16 GB of DDR4 RAM and a Celeron N5105 thrown in. That same afternoon Ubuntu Server was already installed."
+tags: ["host", "os"]
+---
+
+## Why I wanted my own server
+
+I had been running Docker containers on my own PC for odd jobs — nothing serious, but enough that my everyday machine felt too small as a place to leave things running in the background. I wanted a real “server”: somewhere to deploy the little projects I was building and, of course, spin up Minecraft servers to play with friends.
+
+## The search
+
+I needed something low-power that could stay on 24/7 in the living room without taking space or making a fuss, and that I could reach whenever I wanted. I started looking at the usual mini PCs with 8 GB of RAM at most — the safe option that shows up in every “mini PC for homelab” search.
+
+## The NUC
+
+Until this **Intel NUC11ATKC4** showed up on Wallapop for €80: 16 GB of DDR4 RAM and a 500 GB NVMe, with a Celeron N5105 along for the ride. I haggled it down to **€70**. This was right when RAM prices started climbing on AI demand — those same 16 GB as loose SODIMMs already cost more than €120 on their own. I didn’t think twice.
+
+## First boot
+
+That same afternoon, before it even left the living-room table, I put **Ubuntu Server 24.04 LTS** on it. No second thoughts — it’s what I knew servers used, after a few failed attempts at a free Oracle Cloud VPS that never worked out because of demand.
+
+No desktop environment, everything over **SSH**, with Docker as a first-class citizen from minute one. I’ve thought about Proxmox more than once, but for how I use the NUC today (nothing exposed outward, no third party needing access they shouldn’t have) I don’t see the need. Still on Ubuntu.
+
+I left it in the living room that afternoon and started tinkering remotely from my main machine. The first service I brought up was **n8n** — I knew it from my internship at TenaAsesores, so it was the natural candidate to start automating bits of the homelab itself. That NUC was the seed of everything else.

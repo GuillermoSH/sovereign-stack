@@ -1,0 +1,45 @@
+---
+title: "Minecraft server on the homelab: vanilla, hard, automatic backups"
+date: "2026-08-15"
+excerpt: "I set up a Minecraft server at home. Vanilla, hard mode, daily backups and RCON warnings before every restart — all in Docker."
+tags: ["minecraft", "docker", "homelab", "backups"]
+---
+
+Not everything in the homelab has to be serious infrastructure. Sometimes you just set up a Minecraft server.
+
+## The server
+
+It runs in Docker on the **itzg/minecraft-server** image — the most complete and maintained one for this. Pure vanilla, current version, hard mode, up to 10 concurrent players.
+
+Access from outside the house goes through **WireGuard on the MikroTik** — no opening the Minecraft port straight to the internet. Anyone who wants to play needs to be on the VPN. No exposure to bots scanning for public servers.
+
+## Backups
+
+What matters most is not losing the world if something fails. The **itzg/mc-backup** image handles it cleanly — it runs as a parallel container and coordinates with the server over **RCON** to pause disk saves during the backup so the world doesn’t end up inconsistent.
+
+The scheme:
+
+- Automatic daily backup at **4:30 AM**
+- **7-day** retention — older backups delete themselves
+- The backup container mounts server data **read-only** — it can only read, not change anything
+- Initial wait after start before the first backup, so the server is fully up
+
+Backups live in a local directory. Still pending: replication to external storage as a second layer, but for a start it covers the likely cases — corruption, human error, a bad update.
+
+## Restarts
+
+Restarts are scheduled. Before they run, the server warns players **in-game via RCON** with a countdown — so nobody gets cut mid-session without notice.
+
+## What’s next: PhantomDash
+
+I have a GitHub project called [**PhantomDash**](https://github.com/GuillermoSH/PhantomDash) — a self-hosted dashboard for the server, designed for limited hardware. Go backend for minimal RAM use, leaving power free for the game server.
+
+Planned features:
+
+- Live interactive 2D map with connected players and coordinates
+- Real-time server metrics
+- RCON console with role-restricted commands
+- Container power management (start, stop, restart)
+- Role system: player, moderator, and admin
+
+100% self-hosted, no telemetry, no external cloud dependencies. Actively in development.

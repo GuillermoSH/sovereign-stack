@@ -1,0 +1,120 @@
+---
+title: "Homelab roadmap: what’s next and in what order"
+date: "2026-08-17"
+excerpt: "I have several pending homelab changes. Grouped into blocks with a logical order so I don’t break things along the way."
+tags: ["stack", "homelab", "roadmap", "traefik", "vlans", "dockhand"]
+---
+
+import { FlowChain } from '../../components/FlowChain'
+
+The homelab never sits still. Some services work fine, others work but have a better replacement, and some things simply aren’t done yet. Instead of changing things at random, I’ve organized them into blocks with clear dependencies.
+
+This is the current state and what’s coming.
+
+## Current state
+
+The core of the homelab runs on an **Intel NUC11ATKC4** managed with **Dockge**, with **Nginx Proxy Manager** as reverse proxy and **Tailscale** for remote access without opening ports. Active services:
+
+- **Pi-hole** — DNS and network blocking; also DNS for the tailnet
+- **n8n** — automation and orchestration, with pipelines to Telegram
+- **Vaultwarden** — Bitwarden-compatible password manager
+- **Beszel** — system monitoring
+- **Uptime Kuma** — service monitoring
+- **RustDesk** — self-hosted remote access
+- **Stirling PDF** — PDF tools with built-in OCR
+- **rembg** — local AI background removal, no external calls
+- **Actual Budget** — personal finance
+- **Dockge** — Compose stack management
+
+Home network enters through a **MikroTik hEX** with the ISP router in DMZ, and two **TP-Link AX58** APs in EasyMesh mode.
+
+---
+
+## Block 1 — VLANs on the MikroTik
+
+First because it’s independent of everything else and the most structural change.
+
+The network is flat today — every device shares the same segment. The goal is to split it into VLANs:
+
+- **VLAN 10** — Management (NUC, hEX admin)
+- **VLAN 20** — Servers (NUC and its services, Pi-hole)
+- **VLAN 30** — Trusted PCs
+- **VLAN 40** — IoT / printers
+- **VLAN 50** — Wi‑Fi (AX58 as APs with SSIDs split by VLAN)
+
+With inter-VLAN firewall rules so IoT can only talk to WAN, and per-device QoS to prioritize what matters.
+
+Tailscale stays up the whole time as a rescue network — if local access breaks, I still have a way in.
+
+---
+
+## Block 2 — Docker infrastructure + network restarts
+
+This block has three parts that belong in the same pass because they mean touching every compose anyway.
+
+### 2A — Scheduled network-device restarts
+
+The MikroTik has a native RouterOS scheduler. The AX58s do too from the web UI. The plan is to stagger overnight restarts with 2–3 minutes between devices so the whole network doesn’t drop at once.
+
+The ISP router stays out of it — it isn’t mine, and touching it has more risk than upside.
+
+### 2B — Dockge → Dockhand
+
+As I wrote in the previous post, Dockge development has stalled. **Dockhand** is the natural replacement — single container, SQLite, built-in vulnerability scanning, free OIDC, and live logs back.
+
+Migration means bringing Dockhand up in parallel, moving stacks one by one, and retiring Dockge once everything checks out.
+
+### 2C — Nginx Proxy Manager → Traefik
+
+**Traefik** enables two things NPM doesn’t have:
+
+- **Docker auto-discovery** — each new container only needs labels in compose, no UI to touch
+- **On-demand containers** — can start a stopped container when a request arrives and shut it down after X minutes idle
+
+Every stack migrated to Dockhand in the previous step gets Traefik labels in the same pass. One trip through all composes for both changes.
+
+---
+
+## Block 3 — On-demand services
+
+With Traefik running, some services don’t need to stay up all the time.
+
+- **Stirling PDF** — starts when someone opens the site, shuts down after idle
+- **Actual Budget** — same
+- **rembg** — also a candidate; only used occasionally
+- **n8n** — stays always on; Telegram webhooks need it listening, and boot delay would break the flow
+
+---
+
+## Block 4 — Peppermint: household tickets
+
+The last block, more for convenience than technical need.
+
+**Peppermint** is a minimal Docker helpdesk. The idea is anyone at home can open a ticket from a simple page — no account, no fuss — and I manage them on a kanban.
+
+Peppermint’s webhook hooks into n8n so each new ticket lands as a Telegram notification with details. That way I don’t have to watch the panel to know something needs attention.
+
+---
+
+## Order matters
+
+<FlowChain
+  stages={[
+    { label: 'Block 1', detail: 'VLANs' },
+    {
+      label: 'Block 2',
+      detail: 'Docker infrastructure + network restarts',
+      sub: [
+        { label: '2A', detail: 'network restarts' },
+        { label: '2B', detail: 'Dockhand' },
+        { label: '2C', detail: 'Traefik' },
+      ],
+    },
+    { label: 'Block 3', detail: 'on-demand' },
+    { label: 'Block 4', detail: 'Peppermint' },
+  ]}
+/>
+
+Blocks 2 and 3 have a direct dependency — on-demand needs Traefik. The rest are independent and can run in parallel if there’s time and energy.
+
+The homelab is never finished. But at least now I know in what order I’ll break things.

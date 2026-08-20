@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
 
 # Personal scratch notes — raw brain-dump, not meant to be published as-is
 content-notes.md

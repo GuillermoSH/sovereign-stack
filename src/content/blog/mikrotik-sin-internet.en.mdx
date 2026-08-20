@@ -1,0 +1,24 @@
+---
+title: "The MikroTik and three days without internet"
+date: "2026-04-01"
+excerpt: "A family gift, zero RouterOS knowledge, and the whole house offline while I learned by trial and error."
+tags: ["network", "mikrotik"]
+---
+
+## The gift and the plan
+
+The MikroTik hEX arrived as a gift from a relative in the field: he handed it over so I could tinker with zero RouterOS knowledge. I used Easter week — parents on holiday, no classes — to go at it properly. If something broke, I’d be the only one hurt.
+
+## Two or three days without internet
+
+And that’s how it went. **Two or three days without decent internet in the whole house**, because I didn’t stop at plugging in the MikroTik: in the same push I wanted **Nginx Proxy Manager** and **Pi-hole** working at once. Get up, sit with it, and not let go until night, hoping I’d finally close it out. It wasn’t always a total blackout — some days it just “went badly”, or not all of the internet loaded, depending on how DNS was pointed. And because I was also poking at MikroTik **mangles**, things failed in ways that weren’t really the root cause; I was flying mostly blind and couldn’t tell one failure from another.
+
+I learned by trial and error: asking AI about concepts I didn’t get, pulling Reddit threads, redoing the config every time something stopped working. The funniest — or most frustrating — bit was leaving **DNS** pointed wrong and being unable to pull Docker images for a good while. Luckily I left the Movistar TV box off the new network from the start, mostly so its own DNS wouldn’t break — at least I could watch TV while the rest of the house limped along.
+
+## The fire test
+
+In the end it stuck: ISP in bridge and DMZ to the MikroTik (so it wouldn’t own NAT resolution), and from there the LAN to the NUC and future access points. The fire test was opening marca.com and seeing not a single ad — that’s when I knew Pi-hole was finally resolving properly.
+
+## What’s still pending
+
+VLANs (separating devices, guest network, IoT, QoS) are still on paper — planned for a long time, not built yet.

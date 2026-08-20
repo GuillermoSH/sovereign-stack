@@ -1,0 +1,53 @@
+---
+title: "Gastromind: the whole end-of-cycle stack on the NUC"
+date: "2026-05-10"
+excerpt: "Redis, PostgreSQL, pgAdmin, MongoDB, Spring Boot, Angular and Odoo running together on the NUC — the only group in the course that pulled it off."
+tags: ["milestone", "stack", "docker", "cicd"]
+---
+
+import { FlowChain } from '../../components/FlowChain'
+
+## The goal
+
+One of the plans I had since getting the NUC was to gradually put everything we were building for **Gastromind** there — our household food-storage management app, the end-of-cycle project — so we could show up to the presentation with the full stack really deployed, not running locally on whoever’s laptop. Between internships and classes it was hard to find time, so as soon as I had a free stretch I sat down and built it all in one go.
+
+## The backend already shipped with Docker
+
+The backend has used Docker since day one of the project: **Spring Boot**, **PostgreSQL**, **Redis**, **MongoDB**, and **pgAdmin**. The key piece is a Spring plugin that recognizes the project’s Compose files and brings them up automatically when the API is deployed, with no hand-orchestration outside. That makes moving everything to the NUC almost trivial — the same Compose we use in development is what lands in “production”.
+
+## The frontend came later
+
+Client pieces were still missing: **Angular** for the web and the mobile app on **React Native + Expo**. Angular stayed low priority all through development and only came up in the last week. Expo deployed straight to **expo.dev** servers on the developer plan, and we tested with **Expo Go** on the phone. On iOS, Expo Go needs HTTPS to hit the API — that’s where Nginx Proxy Manager with **Let’s Encrypt** came in to serve everything under a valid certificate.
+
+On top of that sits **Odoo**, integrated as a project requirement — another service running alongside the rest, not tied directly to the Gastromind backend but treated the same way: container, tailnet, and reverse proxy.
+
+## SSL without opening a single port
+
+The whole stack ends up with real SSL thanks to **Nginx Proxy Manager** and **Cloudflare**: Let’s Encrypt DNS challenge against the Cloudflare API, with no need to expose ports 80 or 443 to the outside. All traffic stays on the LAN, with valid certificates anyway.
+
+## CI/CD with GitHub Actions
+
+Both the Spring Boot backend and the Expo stack have CI/CD via GitHub workflows. The API has a minimum test threshold to advance a branch: **60% in development** and **80% in production**. Miss that percentage and there’s no merge or deploy.
+
+<FlowChain
+  stages={[
+    { label: 'Push', detail: 'to the development or main branch' },
+    { label: 'Tests', detail: 'at least 60% in dev, 80% in prod' },
+    { label: 'Merge', detail: 'only if the threshold is met' },
+    { label: 'Deploy', detail: 'on the NUC via GitHub Actions' },
+  ]}
+/>
+
+## Controlled access with Tailscale
+
+All of this lives inside a Tailscale tailnet shared with my classmates, with access scoped so each person only reaches what they’re meant to. **Portainer** is the front door: from there they can view logs, start services, and restart them. No SSH and no getting into the n8n panel.
+
+## Watch and automate from Telegram
+
+So nobody has to stare at a dashboard, **Uptime Kuma** reports outages in a Telegram group for the team, with a watch bot that can prune unused Docker volumes and, if needed, bring the whole stack up from chat.
+
+## The result
+
+None of the other groups in the course had the full stack deployed for the presentation. We did. After presenting, I tore down every project service and left the NUC clean again — personal stuff only.
+
+It was the first “serious” use of the homelab, and proof the NUC could hold a lot more than it looked when I bought it for €70.

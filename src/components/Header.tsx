@@ -293,7 +293,7 @@ export default function Header({ lang, onToggleLang, theme, onToggleTheme, activ
           <button
             type="button"
             className="menu-toggle mobile-nav-close"
-            aria-label={lang === 'es' ? 'Cerrar menú' : 'Close menu'}
+            aria-label={t.navCloseMenu}
             onClick={() => setMobileOpen(false)}
           >
             <CloseIcon />

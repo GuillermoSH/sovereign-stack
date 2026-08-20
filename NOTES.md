@@ -33,9 +33,8 @@ completo** en su propia ruta.
       `src/content/blog/`, con contenido real sacado de `content-notes.md` (NUC + primer
       arranque, MikroTik y la caída de red, milestone Gastromind, cambio Portainer→Dockge).
       Se descartó la entrada `mock` de red — sustituida por la historia real.
-- [x] Blog en **español únicamente** por ahora (no bilingüe) — el contenido real es más
-      rico en la voz original del autor; traducir es backlog, no bloqueante. La landing
-      conserva el toggle ES/EN para su propia UI.
+- [x] Blog en **español e inglés** — posts MDX con sufijo `.es.mdx` / `.en.mdx`, misma
+      slug; el loader (`getPosts` / `getPost`) elige por `lang` con fallback.
 - [x] `BlogLayout` (`src/components/BlogLayout.tsx`) da header/footer mínimos + toggle de
       tema a `/blog` y `/blog/:slug`, compartiendo `useTheme` con la landing.
 
@@ -49,12 +48,11 @@ landing como los posts del blog.
       estático/manual?
 - [ ] **v3** — mejoras visuales, contenido dinámico, más detalle técnico.
 - [x] Blog de actualizaciones (ver arriba).
-- [ ] **Despliegue: detrás de Tailscale**, coherente con la filosofía del propio sitio
-      (nada de puertos públicos). ⚠️ Nota a resolver: si el objetivo es que reclutadores o
-      visitantes externos lo vean, un despliegue solo-tailnet limita el acceso a
-      dispositivos en tu red Tailscale. Si quieres que sea públicamente visible mientras se
-      sirve desde tu propia infra, la opción natural es **Tailscale Funnel** (expone el
-      servicio con TLS gestionado por Tailscale, sin abrir puertos en el router). Aclarar
-      cuál de los dos escenarios es el que quieres.
-- [ ] ¿Analítica? (self-hosted tipo Plausible, o ninguna).
-- [ ] ¿SEO / OG tags / favicon set completo?
+- [x] **Despliegue: Vercel** (SPA Vite desde GitHub). No Tailscale para el sitio público —
+      el lab sigue privado; esta web es la vitrina. En Vercel: Project → Settings →
+      Environment Variables → `VITE_GA_MEASUREMENT_ID=G-…` (Production). Build: `pnpm
+      build` / Output: `dist`. `vercel.json` reescribe rutas al `index.html` (React Router).
+- [x] **Analítica:** Google Analytics 4 (`VITE_GA_MEASUREMENT_ID`) solo tras consentimiento
+      explícito (banner Aceptar/Rechazar). Páginas `/legal`, `/privacy`, `/cookies`.
+- [x] **SEO mínimo:** title/description por ruta, Open Graph + Twitter (`/og.png`),
+      canonical, `robots.txt` + `sitemap.xml` en build (`VITE_SITE_URL`).

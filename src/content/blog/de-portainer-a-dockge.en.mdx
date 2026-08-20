@@ -1,0 +1,32 @@
+---
+title: "From Portainer to Dockge: what I gained and what I lost"
+date: "2026-05-22"
+excerpt: "Portainer lasted through the project presentation. Right after, I swapped it for something simpler — and lost live logs along the way."
+tags: ["stack", "dockge"]
+---
+
+## Portainer, while it made sense
+
+I didn’t start with **Dockge**. The original Compose manager was **Portainer**, and it stayed until the Gastromind presentation. Multi-user, live logs, stack management, system and container monitoring, volume views… At the time it was exactly what I needed to run several services for different people at once.
+
+## Switching to Dockge
+
+Right after delivering the project I switched to **Dockge**, looking for something simpler day to day — I no longer needed multi-user or a feature-heavy UI. One container, no separate database to maintain, and an interface that goes straight to what I actually use: edit Compose, bring stacks up and down, and little else.
+
+## What I lost: live logs
+
+That’s where I lost a piece I miss: **watching live logs from the UI itself**. Now I do that from a terminal over SSH:
+
+```bash
+docker compose logs -f <service>
+```
+
+Not as cozy as having it built in, but for how I use the homelab today, the rest of Dockge makes up for it.
+
+## An alternative on my radar
+
+If I ever miss that convenience more, there are projects meant to fill the gap without going back to a heavier manager: **Dozzle**, for example, is a real-time log viewer that runs as its own container without touching the rest of the stack. I haven’t set it up yet — I don’t miss logs enough to add another service — but it’s the option I’ve noted if I change my mind.
+
+## And Dockge — for how much longer?
+
+Even so, it already has an expiry date: in Reddit homelab threads people say maintenance is winding down. I haven’t picked a replacement yet, so when the time comes I’ll look at it calmly.

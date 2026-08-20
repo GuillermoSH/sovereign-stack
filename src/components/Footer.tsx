@@ -44,13 +44,16 @@ function LinkedInIcon() {
 
 type FooterProps = {
   lang: Lang
+  /** Landing keeps the marquee; blog drops it so the ticker doesn't compete with reading. */
+  variant?: 'landing' | 'blog'
 }
 
-export default function Footer({ lang }: FooterProps) {
+export default function Footer({ lang, variant = 'landing' }: FooterProps) {
   const t = strings[lang]
   const location = useLocation()
   const isHome = location.pathname === '/'
   const revealRef = useReveal<HTMLElement>()
+  const showMarquee = variant === 'landing'
 
   const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`)
 
@@ -58,28 +61,37 @@ export default function Footer({ lang }: FooterProps) {
   const marqueeSequence = Array.from({ length: MARQUEE_LOOPS }, () => marqueePhrase).flat()
 
   return (
-    <footer className="site-footer" ref={revealRef}>
-      <div className="site-footer__marquee" aria-hidden="true">
-        <div className="site-footer__marquee-track">
-          {marqueeSequence.map((phrase, i) => (
-            <span key={`a-${i}`} className="site-footer__marquee-item">
-              {phrase}
-              <span className="site-footer__marquee-dot" />
-            </span>
-          ))}
-          {marqueeSequence.map((phrase, i) => (
-            <span key={`b-${i}`} className="site-footer__marquee-item">
-              {phrase}
-              <span className="site-footer__marquee-dot" />
-            </span>
-          ))}
-        </div>
-      </div>
-      <p className="visually-hidden">{t.footerMarqueeBrand}</p>
+    <footer className={`site-footer site-footer--${variant}`} ref={revealRef}>
+      {showMarquee ? (
+        <>
+          <div className="site-footer__marquee" aria-hidden="true">
+            <div className="site-footer__marquee-track">
+              {marqueeSequence.map((phrase, i) => (
+                <span key={`a-${i}`} className="site-footer__marquee-item">
+                  {phrase}
+                  <span className="site-footer__marquee-dot" />
+                </span>
+              ))}
+              {marqueeSequence.map((phrase, i) => (
+                <span key={`b-${i}`} className="site-footer__marquee-item">
+                  {phrase}
+                  <span className="site-footer__marquee-dot" />
+                </span>
+              ))}
+            </div>
+          </div>
+          <p className="visually-hidden">{t.footerMarqueeBrand}</p>
+        </>
+      ) : null}
 
       <div className="layout-shell site-footer__inner">
         <div className="site-footer__top">
           <div className="site-footer__intro">
+            {variant === 'blog' ? (
+              <Link to="/" className="site-footer__brand">
+                {t.footerMarqueeBrand}
+              </Link>
+            ) : null}
             <p className="site-footer__bio">{t.footerBio}</p>
           </div>
 
@@ -106,14 +118,21 @@ export default function Footer({ lang }: FooterProps) {
 
       <div className="site-footer__bar">
         <div className="layout-shell site-footer__bar-inner">
-          <p className="site-footer__legal">
-            {t.footerCopyright}
-            <span className="site-footer__credit-sep" aria-hidden="true">
-              {' '}
-              ·{' '}
-            </span>
-            {t.footerRights}
-          </p>
+          <div className="site-footer__legal-block">
+            <nav className="site-footer__policy" aria-label={t.footerLegalNavLabel}>
+              <Link to="/legal">{t.footerLinkLegal}</Link>
+              <Link to="/privacy">{t.footerLinkPrivacy}</Link>
+              <Link to="/cookies">{t.footerLinkCookies}</Link>
+            </nav>
+            <p className="site-footer__legal">
+              {t.footerCopyright}
+              <span className="site-footer__credit-sep" aria-hidden="true">
+                {' '}
+                ·{' '}
+              </span>
+              {t.footerRights}
+            </p>
+          </div>
 
           <div className="site-footer__socials" aria-label={t.footerSocialsLabel}>
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub">

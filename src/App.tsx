@@ -1,7 +1,7 @@
 import { useEffect, useState, type KeyboardEvent, type TransitionEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { strings, type Lang, parseRich } from './i18n'
-import { formatPostDate, posts as blogPosts } from './blog'
+import { formatPostDate, getPosts, type Post } from './blog'
 import {
   BeszelIcon,
   DockgeIcon,
@@ -42,6 +42,7 @@ import Header from './components/Header'
 import { BackgroundField, HeroField, SectionField, SectionWaves } from './components/BackgroundField'
 import { useTheme } from './useTheme'
 import { useReveal } from './useReveal'
+import { SITE_NAME, usePageSeo } from './seo'
 import './App.css'
 
 function getServiceGroups(t: (typeof strings)[Lang]) {
@@ -97,16 +98,18 @@ const CAROUSEL_MS = 5500
 
 function LogSlide({
   post,
+  lang,
   t,
 }: {
-  post: (typeof blogPosts)[number]
+  post: Post
+  lang: Lang
   t: (typeof strings)[Lang]
 }) {
   return (
     <Link to={`/blog/${post.slug}`} className="log-slide">
       <div className="log-slide__meta">
         <time className="log-slide__date" dateTime={post.date}>
-          {formatPostDate(post.date)}
+          {formatPostDate(post.date, lang)}
         </time>
         {post.tags && post.tags.length > 0 ? (
           <ul className="log-slide__tags" aria-label={t.updatesTagsLabel}>
@@ -127,9 +130,11 @@ function LogSlide({
 
 function LogCarousel({
   posts,
+  lang,
   t,
 }: {
-  posts: typeof blogPosts
+  posts: Post[]
+  lang: Lang
   t: (typeof strings)[Lang]
 }) {
   const n = posts.length
@@ -229,7 +234,7 @@ function LogCarousel({
                 key={clone ? `clone-${i}-${post.slug}` : post.slug}
                 {...(clone ? { 'data-clone': '', 'aria-hidden': true, inert: true } : {})}
               >
-                <LogSlide post={post} t={t} />
+                <LogSlide post={post} lang={lang} t={t} />
               </li>
             )
           })}
@@ -297,6 +302,12 @@ function App() {
       /* ignore */
     }
   }, [lang])
+
+  usePageSeo({
+    title: `${SITE_NAME} · Homelab`,
+    description: t.metaDescription,
+    path: '/',
+  })
 
   useEffect(() => {
     const sections = SECTION_IDS
@@ -596,7 +607,7 @@ function App() {
               <h2 id="updates-section-title">{t.updatesSectionTitle}</h2>
               <p className="section-intro">{t.updatesSectionIntro}</p>
             </div>
-            <LogCarousel posts={blogPosts.slice(0, LATEST_POSTS)} t={t} />
+            <LogCarousel posts={getPosts(lang).slice(0, LATEST_POSTS)} lang={lang} t={t} />
             <Link to="/blog" className="updates-see-all">
               {t.updatesSeeAll}
             </Link>

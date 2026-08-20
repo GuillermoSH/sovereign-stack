@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { formatPostDate, posts } from '../blog'
+import { Link, useOutletContext } from 'react-router-dom'
+import { formatPostDate, getPosts } from '../blog'
+import type { BlogOutletContext } from '../components/BlogLayout'
+import { strings } from '../i18n'
+import { SITE_NAME, usePageSeo } from '../seo'
 import { getTagIcon, sortTagsByPriority } from '../tagIcons'
 import { useRevealEach } from '../useReveal'
 import { ArrowLeftIcon, ArrowRightIcon, GridIcon, ListIcon } from '../icons/ui'
@@ -21,6 +24,16 @@ function readView(): View {
 }
 
 export default function BlogIndex() {
+  const { lang } = useOutletContext<BlogOutletContext>()
+  const t = strings[lang]
+  const posts = getPosts(lang)
+
+  usePageSeo({
+    title: `${t.blogIndexTitle} · ${SITE_NAME}`,
+    description: t.blogIndexIntro,
+    path: '/blog',
+  })
+
   const [view, setView] = useState<View>(readView)
   const [page, setPage] = useState(0)
 
@@ -48,13 +61,10 @@ export default function BlogIndex() {
     <section className="section blog-index-section" aria-labelledby="blog-index-title">
       <div className="section-head blog-index-head">
         <div>
-          <h1 id="blog-index-title">Bitácora del homelab</h1>
-          <p className="section-intro">
-            Historial completo: hitos, cambios y sustos del homelab, con fecha. La portada
-            solo enseña las últimas entradas — aquí está todo.
-          </p>
+          <h1 id="blog-index-title">{t.blogIndexTitle}</h1>
+          <p className="section-intro">{t.blogIndexIntro}</p>
         </div>
-        <div className="blog-view-toggle" role="group" aria-label="Vista del listado">
+        <div className="blog-view-toggle" role="group" aria-label={t.blogViewLabel}>
           <button
             type="button"
             className={view === 'timeline' ? 'blog-view-toggle__btn is-active' : 'blog-view-toggle__btn'}
@@ -62,7 +72,7 @@ export default function BlogIndex() {
             onClick={() => setViewAndPersist('timeline')}
           >
             <ListIcon aria-hidden="true" />
-            Cronología
+            {t.blogViewTimeline}
           </button>
           <button
             type="button"
@@ -71,24 +81,24 @@ export default function BlogIndex() {
             onClick={() => setViewAndPersist('grid')}
           >
             <GridIcon aria-hidden="true" />
-            Cuadrícula
+            {t.blogViewGrid}
           </button>
         </div>
       </div>
 
       {view === 'timeline' ? (
-        <ol className="blog-log" aria-label="Entradas del blog">
+        <ol className="blog-log" aria-label={t.blogFeedLabel}>
           {posts.map((post, i) => (
             <li key={post.slug} className="blog-log__entry" ref={timelineRef(i)}>
               <time className="blog-log__date" dateTime={post.date}>
-                {formatPostDate(post.date)}
+                {formatPostDate(post.date, lang)}
               </time>
               <div className="blog-log__rail" aria-hidden="true">
                 <span className="blog-log__node" />
               </div>
               <Link to={`/blog/${post.slug}`} className="blog-card">
                 {post.tags && post.tags.length > 0 ? (
-                  <ul className="update-entry__tags blog-card__tags" aria-label="Etiquetas">
+                  <ul className="update-entry__tags blog-card__tags" aria-label={t.blogTagsLabel}>
                     {post.tags.map((tag) => {
                       const Icon = getTagIcon(tag)
                       return (
@@ -110,21 +120,19 @@ export default function BlogIndex() {
         </ol>
       ) : (
         <>
-          <ol className="blog-grid" aria-label="Entradas del blog">
+          <ol className="blog-grid" aria-label={t.blogFeedLabel}>
             {pagePosts.map((post, i) => {
               const sortedTags = post.tags ? sortTagsByPriority(post.tags) : []
               const visibleTags = sortedTags.slice(0, GRID_TAG_LIMIT)
               const hiddenTagCount = sortedTags.length - visibleTags.length
               const tagsLabel =
-                hiddenTagCount > 0
-                  ? `Etiquetas: ${sortedTags.join(', ')}`
-                  : 'Etiquetas'
+                hiddenTagCount > 0 ? `${t.blogTagsLabel}: ${sortedTags.join(', ')}` : t.blogTagsLabel
 
               return (
                 <li key={post.slug} ref={gridRef(i)}>
                   <Link to={`/blog/${post.slug}`} className="blog-grid-card">
                     <time className="blog-grid-card__date" dateTime={post.date}>
-                      {formatPostDate(post.date)}
+                      {formatPostDate(post.date, lang)}
                     </time>
                     {visibleTags.length > 0 ? (
                       <ul className="blog-grid-card__tags" aria-label={tagsLabel}>
@@ -153,13 +161,13 @@ export default function BlogIndex() {
           </ol>
 
           {totalPages > 1 ? (
-            <nav className="blog-pagination" aria-label="Paginación del listado">
+            <nav className="blog-pagination" aria-label={t.blogPaginationLabel}>
               <button
                 type="button"
                 className="blog-pagination__btn"
                 onClick={() => goToPage(page - 1)}
                 disabled={page === 0}
-                aria-label="Página anterior"
+                aria-label={t.blogPrevPage}
               >
                 <ArrowLeftIcon aria-hidden="true" />
               </button>
@@ -182,7 +190,7 @@ export default function BlogIndex() {
                 className="blog-pagination__btn"
                 onClick={() => goToPage(page + 1)}
                 disabled={page === totalPages - 1}
-                aria-label="Página siguiente"
+                aria-label={t.blogNextPage}
               >
                 <ArrowRightIcon aria-hidden="true" />
               </button>

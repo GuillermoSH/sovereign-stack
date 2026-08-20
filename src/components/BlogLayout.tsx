@@ -16,6 +16,10 @@ function readLang(): Lang {
   return 'es'
 }
 
+export type BlogOutletContext = {
+  lang: Lang
+}
+
 export default function BlogLayout() {
   const { theme, toggleTheme } = useTheme()
   const [lang, setLang] = useState<Lang>(readLang)
@@ -46,11 +50,11 @@ export default function BlogLayout() {
 
       <main id="main">
         <div className="layout-shell page-enter" key={location.pathname}>
-          <Outlet />
+          <Outlet context={{ lang } satisfies BlogOutletContext} />
         </div>
       </main>
 
-      <Footer lang={lang} />
+      <Footer lang={lang} variant="blog" />
     </>
   )
 }
