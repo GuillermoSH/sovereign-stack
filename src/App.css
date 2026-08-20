@@ -1999,6 +1999,12 @@ main {
   color: var(--accent);
 }
 
+/* Contador de etiquetas ocultas en la cuadrícula (sin icono, padding simétrico). */
+.update-entry__tag--more {
+  padding: 0.28rem 0.5rem;
+  color: var(--text-muted);
+}
+
 .blog-card:hover .update-entry__tag,
 .blog-card:focus-visible .update-entry__tag {
   color: var(--pill-fg);
@@ -2641,6 +2647,232 @@ main {
   }
 }
 
+/* ——— Blog index: view toggle ——— */
+.blog-index-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+}
+
+.blog-view-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 0.15rem;
+  padding: 0.2rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.blog-view-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.blog-view-toggle__btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.blog-view-toggle__btn:hover {
+  color: var(--text-h);
+}
+
+.blog-view-toggle__btn.is-active {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.blog-view-toggle__btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .blog-view-toggle__btn {
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+/* ——— Blog index: grid view ——— */
+.blog-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 980px) {
+  .blog-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.blog-grid-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.15rem 1.2rem 1.3rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
+  background: color-mix(in oklab, var(--surface) 55%, transparent);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.blog-grid-card:hover,
+.blog-grid-card:focus-visible {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
+  background: color-mix(in oklab, var(--surface) 45%, var(--accent-bg) 16%);
+}
+
+.blog-grid-card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-grid-card:hover {
+    transform: none;
+  }
+}
+
+.blog-grid-card__date {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.blog-grid-card .blog-card__title,
+.blog-grid-card .blog-card__excerpt {
+  margin-top: 0;
+}
+
+.blog-grid-card .blog-card__excerpt {
+  flex: 1;
+}
+
+/* ——— Blog index: pagination ——— */
+.blog-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.blog-pagination__btn {
+  display: grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-h);
+  background: var(--surface);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.blog-pagination__btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.blog-pagination__btn:hover:not(:disabled) {
+  background: var(--nav-hover-bg);
+  border-color: var(--accent-border);
+}
+
+.blog-pagination__btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.blog-pagination__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.blog-pagination__pages {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blog-pagination__pages button {
+  display: grid;
+  place-items: center;
+  min-width: 2.15rem;
+  height: 2.15rem;
+  padding: 0 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.blog-pagination__pages button:hover {
+  color: var(--text-h);
+}
+
+.blog-pagination__pages button.is-active {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.blog-pagination__pages button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 /* ——— Blog post ——— */
 .blog-post-section {
   padding: clamp(1.6rem, 4vw, 2.6rem) 0 clamp(3rem, 6vw, 4.5rem);
@@ -3141,14 +3373,12 @@ main {
   transform: none;
 }
 
-.reveal-pending .svc-band,
-.reveal-pending .blog-log > li {
+.reveal-pending .svc-band {
   opacity: 0;
   transform: translateY(12px);
 }
 
-.reveal-visible .svc-band,
-.reveal-visible .blog-log > li {
+.reveal-visible .svc-band {
   opacity: 1;
   transform: none;
   transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
@@ -3160,7 +3390,17 @@ main {
 .reveal-visible .svc-band:nth-child(4) { transition-delay: 150ms; }
 .reveal-visible .svc-band:nth-child(5) { transition-delay: 200ms; }
 
-.reveal-visible .blog-log > li:nth-child(1) { transition-delay: 0ms; }
-.reveal-visible .blog-log > li:nth-child(2) { transition-delay: 90ms; }
-.reveal-visible .blog-log > li:nth-child(3) { transition-delay: 180ms; }
-.reveal-visible .blog-log > li:nth-child(4) { transition-delay: 270ms; }
+/* Bitácora: cada entrada de la cronología o la cuadrícula observa su propio scroll
+   (`useRevealEach`) y lleva las clases directamente, no vía un contenedor padre. */
+.blog-log__entry.reveal-pending,
+.blog-grid > li.reveal-pending {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.blog-log__entry.reveal-visible,
+.blog-grid > li.reveal-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s var(--ease-out-expo), transform 0.5s var(--ease-out-expo);
+}

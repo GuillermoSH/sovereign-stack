@@ -5,21 +5,42 @@ excerpt: "Portainer aguantó hasta la presentación del proyecto. Justo después
 tags: ["stack", "dockge"]
 ---
 
+## Portainer, mientras tuvo sentido
+
 No empecé con **Dockge**. El gestor de Compose original fue **Portainer**, que se quedó hasta
 la presentación de Gastromind. Tenía multiusuario, logs en vivo, gestión de stacks,
 monitorización de sistema y contenedores, vista de volúmenes... En su momento era justo lo que
 necesitaba para manejar varios servicios de gente distinta a la vez.
 
+## El cambio a Dockge
+
 Justo después de entregar el proyecto lo cambié por **Dockge**, buscando algo más simple para
-mi día a día — ya no necesitaba nada multiusuario ni tan cargado de funciones. Y ahí perdí una
-pieza que echo de menos: **ver logs en vivo desde la propia interfaz**. Ahora eso lo hago por
-terminal, vía SSH:
+mi día a día — ya no necesitaba nada multiusuario ni tan cargado de funciones. Un único
+contenedor, sin base de datos aparte que mantener, y una interfaz que va directa a lo que uso de
+verdad: editar el Compose, levantar y bajar stacks, y poco más.
+
+## Lo que perdí: logs en vivo
+
+Ahí perdí una pieza que echo de menos: **ver logs en vivo desde la propia interfaz**. Ahora eso
+lo hago por terminal, vía SSH:
 
 ```bash
 docker compose logs -f <servicio>
 ```
 
 No es tan cómodo como tenerlo integrado, pero para lo que uso el homelab hoy, el resto de
-Dockge compensa. Aun así, ya tiene fecha de caducidad: en los hilos de homelabbing de Reddit se
-comenta que se va a dejar de mantener, así que el siguiente salto probablemente sea a
-**Dockhand**, uno de los forks activos.
+Dockge compensa.
+
+## Una alternativa que tengo en el radar
+
+Si en algún momento echo más de menos esa comodidad, hay proyectos pensados justo para cubrir
+ese hueco sin volver a un gestor más pesado: **Dozzle**, por ejemplo, es un visor de logs en
+tiempo real que se levanta como contenedor aparte, sin tocar nada del resto del stack. Por ahora
+no lo he montado — no lo echo tanto de menos como para sumar un servicio más — pero es la
+opción que tengo apuntada si cambio de opinión.
+
+## ¿Y Dockge, para cuánto más?
+
+Aun así, ya tiene fecha de caducidad: en los hilos de homelabbing de Reddit se comenta que se
+va a dejar de mantener. Todavía no tengo decidido el reemplazo, así que cuando llegue el
+momento tocará mirarlo con calma.

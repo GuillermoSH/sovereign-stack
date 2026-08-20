@@ -25,3 +25,17 @@ const tagIcons: Record<string, TagIconComponent> = {
 export function getTagIcon(tag: string): TagIconComponent {
   return tagIcons[tag] ?? TagIcon
 }
+
+// El orden de declaración de `tagIcons` dobla como ranking de prioridad: milestone
+// y las etiquetas generales (stack, homelab, roadmap...) primero, tecnologías
+// específicas después. Las etiquetas sin icono propio (p. ej. "cicd") van al final,
+// en su orden original.
+const tagPriority = Object.keys(tagIcons)
+
+export function sortTagsByPriority(tags: string[]): string[] {
+  return [...tags].sort((a, b) => {
+    const ra = tagPriority.indexOf(a)
+    const rb = tagPriority.indexOf(b)
+    return (ra === -1 ? tagPriority.length : ra) - (rb === -1 ? tagPriority.length : rb)
+  })
+}

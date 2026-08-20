@@ -31,3 +31,40 @@ export function useReveal<T extends HTMLElement>() {
 
   return ref
 }
+
+/**
+ * Variante de `useReveal` para listas: cada item observa su propio scroll y entra
+ * por separado (en vez de un único fundido para todo el contenedor), útil cuando la
+ * lista es más larga que el viewport. `resetKey` fuerza a reobservar cuando cambian
+ * los items mostrados (p. ej. al cambiar de página o de vista) sin cambiar `count`.
+ */
+export function useRevealEach<T extends HTMLElement>(count: number, resetKey: unknown = count) {
+  const itemRefs = useRef<(T | null)[]>([])
+  itemRefs.current.length = count
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const els = itemRefs.current.filter((el): el is T => el !== null)
+    if (!els.length) return
+
+    els.forEach((el) => el.classList.add('reveal-pending'))
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('reveal-pending')
+            entry.target.classList.add('reveal-visible')
+            observer.unobserve(entry.target)
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -10% 0px' },
+    )
+    els.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [count, resetKey])
+
+  return (index: number) => (el: T | null) => {
+    itemRefs.current[index] = el
+  }
+}
